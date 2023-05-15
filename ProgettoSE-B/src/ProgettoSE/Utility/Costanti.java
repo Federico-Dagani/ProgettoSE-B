@@ -3,7 +3,7 @@ package ProgettoSE.Utility;
 public class Costanti {
 
     //path
-    public static final String FILE_RISTORANTE = "ProgettoSE-A-master/src/ProgettoSE/Ristorante.xml";
+    public static final String FILE_RISTORANTE = "ProgettoSE-B/src/ProgettoSE/Ristorante.xml";
     //tempo
     public static final String TEMPO = "Tempo";
     //attori
