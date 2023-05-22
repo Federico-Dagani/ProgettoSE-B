@@ -1,6 +1,6 @@
 package ProgettoSE.Utility;
 
-import ProgettoSE.Utility.InputDati;
+import ProgettoSE.View.InputDatiTestuale;
 
 /*
 Questa classe rappresenta un menu testuale generico a piu' voci
@@ -32,12 +32,12 @@ public class MyMenu {
 
     public int scegliConUscita() {
         stampaMenuConUscita();
-        return InputDati.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
+        return InputDatiTestuale.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
     }
 
     public int scegliSenzaUscita() {
         stampaMenuSenzaUscita();
-        return InputDati.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
+        return InputDatiTestuale.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
     }
 
     public void stampaMenuConUscita() {

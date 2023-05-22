@@ -49,8 +49,9 @@ public class Gestore extends Persona {
         LetturaFileXML letturaFileXML = new LetturaFileXML();
         ristorante = letturaFileXML.leggiRistorante(Costanti.FILE_RISTORANTE);
         //controllo che i menu tematici e le ricette siano valide
-        String messaggio = getRistorante().getAddettoPrenotazione().controllaMenu(getRistorante().getLavoro_persona());
-        messaggio += ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
+        ArrayList<Prenotabile> prenotabili_invalidi= new ArrayList<>();
+        prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona()));
+        prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona()));
         //postcondizione: il ristorante non è null
         assert risOk();
         return messaggio;

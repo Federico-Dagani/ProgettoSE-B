@@ -371,22 +371,19 @@ public class AddettoPrenotazione extends Persona {
     public String controllaMenu(int lavoro_persona) {
         //precondizione: lavoro_persona >= 0
         if (lavoro_persona < 0) throw new IllegalArgumentException("Il lavoro per persona non può essere negativo");
-        String messaggio = "";
+
         ArrayList<Prenotabile> menu_da_eliminare = new ArrayList<>();
         int lunghezza_menu_tematici_iniziale = menu.size();
         //ciclo i menu_tematici del ristorante in modo da controllare che il lavoro sia < 4/3 del lavoro totale del ristorante (se non lo è lo elimino)
         for (Prenotabile menu_tematico : menu) {
             if (menu_tematico instanceof MenuTematico) {
-                //controllo se il lavoro è < 4/3 del lavoro totale del ristorante (se non lo è lo elimino)
-                if (((MenuTematico) menu_tematico).getLavoro_menu() > lavoro_persona * 4 / 3) {
+                /*controllo se il lavoro è < 4/3 del lavoro totale del ristorante (se non lo è lo elimino)
+                  OPPURE
+                  controllo se il menu contiene piatti che non sono disponibili nel periodo di disponibilità del menu
+                 */
+                if (((MenuTematico) menu_tematico).getLavoro_menu() > lavoro_persona * 4 / 3 || !disponibilitaPiattiCorrette((MenuTematico) menu_tematico)) {
                     menu_da_eliminare.add(menu_tematico);
-                    messaggio += "\nIl menu tematico " + menu_tematico.getNome() + " è stato scartato perchè il lavoro richiesto è maggiore del 4/3 del lavoro totale del ristorante";
-                }
-
-                //controllo se il menu contiene piatti che non sono disponibili nel periodo di disponibilità del menu
-                if (!disponibilitaPiattiCorrette((MenuTematico) menu_tematico)) {
-                    menu_da_eliminare.add(menu_tematico);
-                    messaggio += "\nIl menu tematico " + menu_tematico.getNome() + " è stato scartato perchè contiene piatti non disponibili nelle date del menu";
+                    //messaggio += "\nIl menu tematico " + menu_tematico.getNome() + " è stato scartato perchè il lavoro richiesto è maggiore del 4/3 del lavoro totale del ristorante";
                 }
             }
         }

@@ -1,4 +1,4 @@
-package ProgettoSE.Utility;
+package ProgettoSE.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class InputDati {
+public class InputDatiTestuale {
     private static Scanner lettore = creaScanner();
 
     private final static String ERRORE_FORMATO = "Attenzione: il dato inserito non e' nel formato corretto";

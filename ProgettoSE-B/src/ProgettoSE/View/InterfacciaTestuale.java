@@ -5,6 +5,7 @@ import ProgettoSE.Model.Alimentari.Bevanda;
 import ProgettoSE.Model.Alimentari.Extra;
 import ProgettoSE.Model.Alimentari.Ingrediente;
 import ProgettoSE.Model.Attori.Gestore.Gestore;
+import ProgettoSE.Model.Attori.Gestore.Ristorante;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
@@ -13,28 +14,28 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Visualizzazione {
+public class InterfacciaTestuale {
     /**
      * <h2>Metodo che stampa a video il menu del giorno</h2>
-     * <b>Precondizione: </b>gestore e data non nulli<br>
-     * @param gestore gestore del ristorante
+     * <b>Precondizione: </b>ristorante e data non nulli<br>
+     * @param ristorante
      * @param data data di cui si vuole visualizzare il menu
      * @return true se il menu è vuoto, false altrimenti
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static boolean stampaMenuDelGiorno(Gestore gestore, LocalDate data) {
+    public static boolean stampaMenuDelGiorno(Ristorante ristorante, LocalDate data) {
         //precondizione: gestore e data non nulli
-        if(gestore == null || data == null) throw new IllegalArgumentException("Parametri non validi");
+        if(ristorante == null || data == null) throw new IllegalArgumentException("Parametri non validi");
         ripulisciConsole();
         //se il menu è vuoto stampo un messaggio e ritorno true
-        if (gestore.getRistorante().getAddettoPrenotazione().calcolaMenuDelGiorno(data).isEmpty()) {
+        if (ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data).isEmpty()) {
             System.out.println("Non ci sono piatti disponibili per il giorno " + data);
             return true;
         } else {
             System.out.println("\nIl menù disponibile per il giorno " + data + " offre queste specialità:");
             System.out.println("(può scegliere sia i piatti all'interno del menù alla carta che i menù tematici presenti) \n");
             //ciclo l'arraylist di prenotabili e stampo a video i piatti e i menù tematici
-            for (Prenotabile prenotabile : gestore.getRistorante().getAddettoPrenotazione().calcolaMenuDelGiorno(data)) {
+            for (Prenotabile prenotabile : ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data)) {
                 //stampo i piatti
                 if (prenotabile instanceof Piatto) {
                     Piatto piatto = (Piatto) prenotabile;
@@ -162,14 +163,14 @@ public class Visualizzazione {
 
     /**
      * <h2>Metodo che stampa a video il numero di posti disponibili nel ristorante</h2>
-     * <b>Precondizione: </b>gestore non nullo<br>
-     * @param gestore Gestore del ristorante
+     * <b>Precondizione: </b>n_posti non nullo<br>
+     * @param n_posti
      * @throws IllegalArgumentException se il gestore è nullo
      */
-    public static void mostraPostiDisponibili(Gestore gestore){
+    public static void mostraPostiDisponibili(int n_posti){
         //precondizione: gestore non nullo
-        if(gestore == null) throw new IllegalArgumentException("Il gestore non può essere nullo");
-        System.out.println("\nIl numero di posti disponibili nel ristorante è: " + gestore.getRistorante().getN_posti());
+        if(n_posti == 0) throw new IllegalArgumentException("Il numero di posti non può essere nullo");
+        System.out.println("\nIl numero di posti disponibili nel ristorante è: " + n_posti);
     }
 
     /**
@@ -245,6 +246,26 @@ public class Visualizzazione {
             }
         }
     }
+
+    public static void stampaTesto(String messaggio){
+        System.out.printf("\n"+messaggio);
+    }
+
+
+    public static void stampaTesto(String messaggio, String elemento){
+        System.out.printf("\n"+String.format(messaggio, elemento));
+    }
+
+    public static void stampaTesto(String template, String[] elementi){
+        int numPlaceholders = template.length() - template.replace("%s", "").length();
+        if (numPlaceholders != elementi.length) {
+            throw new IllegalArgumentException("Number of placeholders does not match the number of values.");
+        }
+
+        String formattedString = String.format(template, (Object[]) elementi);
+        System.out.println("\n"+formattedString);
+    }
+
 
     /**
      * <h2>Metodo utilizzato nella stampa a video per pulire l'interfaccia</h2>
