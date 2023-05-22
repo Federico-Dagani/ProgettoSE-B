@@ -59,6 +59,7 @@ public class Costanti {
     public static final String UGUALE_ATTUALE = "Il numero di %s inserito è uguale a quello attuale";
     public static final String DATA_NON_VALIDA = "Data in formato non valido";
     public static final String GESTORE_NON_NULLO = "Il gestore non può essere nullo.";
+    public static final String RISTORANTE_NON_NULLO = "Il ristorante non può essere nullo.";
     //valori ristorante
     public static final float IMPREVISTI_CUCINA = (float) (10.0/100);
     public static final float ALIMENTI_SCARTATI = (float) (5.0/100); //rappresenta scarti scaduti o deteriorati, a fine giornata

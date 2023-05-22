@@ -20,7 +20,7 @@ public class Main {
 
         InterfacciaTestuale.benvenuto();
 
-        Gestore gestore = new Gestore(nominaGestore(), null);
+        Gestore gestore = new Gestore(InterfacciaTestuale.inserisciNomeGestore(), null);
 
         Tempo data_attuale = new Tempo(LocalDate.now());
 

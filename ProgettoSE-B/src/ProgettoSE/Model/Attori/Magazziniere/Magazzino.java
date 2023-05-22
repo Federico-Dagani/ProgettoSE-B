@@ -135,16 +135,17 @@ public class Magazzino {
      * @return boolean TRUE se l'inserimento è andato a buon fine, altrimenti FALSE
      * @throws IllegalArgumentException se l'alimento è null
      */
-    public String inserisciAlimento(Alimento alimento) {
+    public boolean inserisciAlimento(Alimento alimento) {
         //precondizione: l'alimento non è null
         if(alimento == null) throw new IllegalArgumentException("Alimento non valido");
 
         boolean duplicato = controllaSeDuplicato(alimento);
         //se controllaSeDuplicato restituisce null allora l'alimento non è duplicato, quindi lo inserisco in magazzino
-        if(alimento instanceof Ingrediente && messagio_duplicazione == null){
+        if(alimento instanceof Ingrediente && !duplicato){
             ingredienti.add(alimento);
-            return "L'ingrediente è stato aggiunto al magazzino";
-        }else if(alimento instanceof Bevanda && messagio_duplicazione == null){
+            return true;
+            //return "L'ingrediente è stato aggiunto al magazzino";
+        }else if(alimento instanceof Bevanda && !duplicato){
             bevande.add(alimento);
             return true;
             //return "La bevanda è stata aggiunta al magazzino";
@@ -153,7 +154,7 @@ public class Magazzino {
             return true;
             //return "L'extra è stato aggiunto al magazzino";
         }
-        return messagio_duplicazione;
+        return false;
     }
 
     /**
@@ -169,7 +170,8 @@ public class Magazzino {
         if(alimento instanceof Ingrediente){
             for(Alimento ingrediente : ingredienti){
                 if(ingrediente.getNome().equalsIgnoreCase(alimento.getNome()))
-                    return "L'ingrediente è già presente nel magazzino";
+                    return true;
+                    //return "L'ingrediente è già presente nel magazzino";
             }
         }else if(alimento instanceof Bevanda){
             for (Alimento bevanda : bevande) {
@@ -180,7 +182,8 @@ public class Magazzino {
         }else if(alimento instanceof Extra){
             for (Alimento extra : extras) {
                 if(extra.getNome().equalsIgnoreCase(alimento.getNome()))
-                    return "L'extra è già presente nel magazzino";
+                    return true;
+                    // return "L'extra è già presente nel magazzino";
             }
         }
         return false;

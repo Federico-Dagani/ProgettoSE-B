@@ -4,8 +4,10 @@ import ProgettoSE.Model.Attori.AddettoPrenotazione.Prenotazione;
 import ProgettoSE.Model.Attori.Persona;
 import ProgettoSE.Utility.LetturaFileXML;
 import ProgettoSE.Utility.Costanti;
+import ProgettoSE.Model.Produzione.Prenotabile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Gestore extends Persona {
     //ATTRIBUTI
@@ -34,6 +36,7 @@ public class Gestore extends Persona {
     private boolean risOk() {
         return ristorante != null;
     }
+
     /**
      * <h2>Metodo che inizializza il ristorante leggendo i dati dal file XML</h2>
      * Dopo la lettura invoca i metodi controllaMenu() e controllaRicette() per controllare che i menu tematici e le ricette siano valide<br><br>
@@ -42,7 +45,7 @@ public class Gestore extends Persona {
      * @return stringa che contiene i messaggi di errore (se ci sono) del menu tematico e delle ricette rifiutati
      * @throws IllegalArgumentException se il ristorante è già stato inizializzato
      */
-    public String inizializzaRistorante() {
+    public ArrayList<Prenotabile> inizializzaRistorante() {
         //precondizione: il ristorante è null
         if(ristorante != null) throw new IllegalArgumentException("Il ristorante è già stato inizializzato");
         //leggo il ristorante dal file xml e lo inizializzo
@@ -54,7 +57,7 @@ public class Gestore extends Persona {
         prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona()));
         //postcondizione: il ristorante non è null
         assert risOk();
-        return messaggio;
+        return prenotabili_invalidi;
     }
 
     /**

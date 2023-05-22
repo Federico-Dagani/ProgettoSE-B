@@ -332,7 +332,7 @@ public class AddettoPrenotazione extends Persona {
      * @param lavoro_persona il lavoro per persona
      * @return stringa che contiene i messaggi di errore (se ci sono) dei piatti rifiutati
      */
-    public String controllaRicette(int lavoro_persona) {
+    public ArrayList<Prenotabile> controllaRicette(int lavoro_persona) {
         String messaggio = "";
         ArrayList<Prenotabile> piatti_da_eliminare = new ArrayList<>();
         int lunghezza_menu_iniziale = menu.size();
@@ -356,7 +356,7 @@ public class AddettoPrenotazione extends Persona {
         piatti_da_eliminare.forEach(piatto -> menu.remove(piatto));
         //postcondizione: la lunghezza piatti_da_eliminare <= lunghezza menu iniziale
         assert piatti_da_eliminare.size() <= lunghezza_menu_iniziale;
-        return messaggio;
+        return piatti_da_eliminare;
     }
 
     /**
@@ -368,7 +368,7 @@ public class AddettoPrenotazione extends Persona {
      * @param lavoro_persona il lavoro per persona del ristorante
      * @return stringa che contiene i messaggi di errore (se ci sono) dei menu tematici rifiutati
      */
-    public String controllaMenu(int lavoro_persona) {
+    public ArrayList<Prenotabile> controllaMenu(int lavoro_persona) {
         //precondizione: lavoro_persona >= 0
         if (lavoro_persona < 0) throw new IllegalArgumentException("Il lavoro per persona non può essere negativo");
 
@@ -391,7 +391,7 @@ public class AddettoPrenotazione extends Persona {
         menu_da_eliminare.forEach(menu_tematico -> menu.remove(menu_tematico));
         //postcondizione: la lunghezza menu_tematici da eliminare <= lunghezza menu_tematici iniziale
         assert menu_da_eliminare.size() <= lunghezza_menu_tematici_iniziale;
-        return messaggio;
+        return menu_da_eliminare;
     }
 
     /**

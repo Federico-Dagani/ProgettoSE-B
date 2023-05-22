@@ -9,6 +9,7 @@ import ProgettoSE.Model.Attori.Gestore.Ristorante;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
+import ProgettoSE.Utility.Costanti;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -73,6 +74,45 @@ public class InterfacciaTestuale {
             return false;
         }
     }
+
+    /**
+     * <h2>Metodo per migliorare l'interazinoe con il programma</h2>
+     * Comunica in output un messaggio i benvenuto con all'interno le info essenziali
+     */
+    public static void benvenuto() {
+        System.out.println(Costanti.CORNICE_SUP);
+        System.out.println("|\t" + Costanti.BENVENUTO + "\t|");
+        System.out.println(Costanti.CORNICE_INF);
+        System.out.println();
+    }
+
+
+    /**
+     * <h2>Metodo per l'inserimento del nome del gestore</h2>
+     * @return nome del gestore
+     */
+    public static String inserisciNomeGestore() {
+        return InputDatiTestuale.leggiStringaConSpazio("Benvenuto, inserisca il nome del gestore del ristorante: ");
+    }
+
+    /**
+     * metodo che stampa le fasi di inizializzazione del ristorante
+     * @param list lista contenente i prenotabili presenti nei dati di inizializzazione che sono stati
+     *             ritenuti invalidi e quindi eliminati dal modello
+     */
+    public static void stampaInizializzazione(ArrayList<Prenotabile> list){
+        System.out.printf("\nIl gestore sta inizializzando il ristorante ...");
+        stampaElementiInvalidi(list);
+        System.out.println("\nInizializzazione automatica del ristorante completata.\n");
+    }
+
+    public static void stampaElementiInvalidi(ArrayList<Prenotabile> list){
+        if(!list.isEmpty()){
+            System.out.println("\nElementi invalidi trovati:");
+            list.forEach(prenotabile -> System.out.printf("\n\t " + prenotabile.getNome()));
+        }
+    }
+
     /**
      * <h2>Metodo che stampa a video la lista dei piatti e menu scelti fino a quel momento in una prenotazione</h2>
      * <b>Precondizione: </b>mappa scelte non nulla<br>
@@ -151,14 +191,14 @@ public class InterfacciaTestuale {
 
     /**
      * <h2>Metodo che stampa a video il carico di lavoro per persona</h2>
-     * <b>Precondizione: </b>gestore non nullo<br>
-     * @param gestore Gestore del ristorante
+     * <b>Precondizione: </b>lavoro persona non nullo<br>
+     * @param lavoro_persona
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static void mostraCaricoLavoroPersona(Gestore gestore){
+    public static void mostraCaricoLavoroPersona(int lavoro_persona){
         //precondizione: gestore non nullo
-        if(gestore == null) throw new IllegalArgumentException("Il gestore non può essere nullo");
-        System.out.println("\nIl carico di lavoro per persona è: " + gestore.getRistorante().getLavoro_persona());
+        if(lavoro_persona == 0) throw new IllegalArgumentException("Il lavoro persona non può essere nullo");
+        System.out.println("\nIl carico di lavoro per persona è: " + lavoro_persona);
     }
 
     /**
