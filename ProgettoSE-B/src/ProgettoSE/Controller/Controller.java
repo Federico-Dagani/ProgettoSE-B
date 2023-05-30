@@ -10,17 +10,16 @@ import ProgettoSE.Model.Attori.AddettoPrenotazione.Prenotazione;
 import ProgettoSE.Model.Attori.Cliente;
 import ProgettoSE.Model.Attori.Gestore.Ristorante;
 import ProgettoSE.Model.Attori.Magazziniere.Magazzino;
-import ProgettoSE.Model.MenuStruttura;
-import ProgettoSE.Model.Produzione.Menu.MenuTematico;
-
 import ProgettoSE.Model.Attori.Gestore.Gestore;
+import ProgettoSE.Model.Attori.Tempo;
 
+import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Model.Produzione.Ricetta;
-import ProgettoSE.Model.Attori.Tempo;
 import ProgettoSE.Utility.Costanti;
-import ProgettoSE.View.InterfacciaTestuale;
+import ProgettoSE.Utility.MyMenu;
+
 import ProgettoSE.View.InputDatiTestuale;
 import ProgettoSE.Utility.MyMenu;
 
@@ -48,10 +47,10 @@ public class Controller {
 
     public static void eseguiIterazioni(Gestore gestore, Tempo data_attuale){
         //creazione dei menu a scelta
-        MyMenu menu_attori = MenuStruttura.creaMenuStruttura(Costanti.ATTORI);
-        MyMenu menu_gestore = MenuStruttura.creaMenuStruttura(Costanti.GESTORE);
-        MyMenu menu_tempo = MenuStruttura.creaMenuStruttura(Costanti.TEMPO);
-        MyMenu menu_inizializza = MenuStruttura.creaMenuStruttura(Costanti.INIZIALIZZAZIONE);
+        MyMenu menu_attori = MyMenu.creaMenuStruttura(Costanti.ATTORI);
+        MyMenu menu_gestore = MyMenu.creaMenuStruttura(Costanti.GESTORE);
+        MyMenu menu_tempo = MyMenu.creaMenuStruttura(Costanti.TEMPO);
+        MyMenu menu_inizializza = MyMenu.creaMenuStruttura(Costanti.INIZIALIZZAZIONE);
 
         if (InputDatiTestuale.yesOrNo("Vuoi modificare ulteriormente i dati di inizializzazione?")){
             InterfacciaTestuale.ripulisciConsole();
@@ -225,10 +224,10 @@ public class Controller {
 
         //comunico l'esito della stima dei posti
         if (posti_liberi_stimati > 0) {
-            InterfacciaTestuale.stampaTesto("I posti liberi nel ristorante sono %s.", Integer.toString(posti_liberi_effettivi));
-            InterfacciaTestuale.stampaTesto("Abbiamo stimato di poter cucinare %s portate (solitamente 2 portate a testa).", Integer.toString(posti_liberi_stimati * 2));
+            view.stampaTesto("I posti liberi nel ristorante sono %s.", Integer.toString(posti_liberi_effettivi));
+            view.stampaTesto("Abbiamo stimato di poter cucinare %s portate (solitamente 2 portate a testa).", Integer.toString(posti_liberi_stimati * 2));
         } else {
-            InterfacciaTestuale.stampaTesto("Ci scusiamo ma la stima del carico di lavoro non ci permette di accettare altre prenotazioni in questa data");
+            view.stampaTesto("Ci scusiamo ma la stima del carico di lavoro non ci permette di accettare altre prenotazioni in questa data");
             return;
         }
 
@@ -236,7 +235,7 @@ public class Controller {
 
         inserisciSceltePrenotazione(ristorante, data_prenotazione, cliente, n_coperti);
 
-        InterfacciaTestuale.ripulisciConsole();
+        view.ripulisciConsole();
 
     }
 
@@ -256,18 +255,18 @@ public class Controller {
         ArrayList<Prenotabile> menu_del_giorno = ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione);
         //Se non il menu è vuoto non faccio fare nessuna scelta
         if (menu_del_giorno.isEmpty()){
-            InterfacciaTestuale.stampaTesto("Il menu è attualmente vuoto, le chiediamo di cambiare data della prenotazione");
+            view.stampaTesto("Il menu è attualmente vuoto, le chiediamo di cambiare data della prenotazione");
             return;
         }
 
         do {
-            InterfacciaTestuale.stampaMenuDelGiorno(ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione), data_prenotazione);
+            view.stampaMenuDelGiorno(ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione), data_prenotazione);
 
             //mostro un riepilogo delle scelyìte già effettuate
-            InterfacciaTestuale.stampaScelte(scelte);
+            view.stampaScelte(scelte);
 
             if (n_portate < n_coperti)
-                InterfacciaTestuale.stampaTesto("Deve scelgliere almeno altre %s portate per convalidare la prenotazione.", String.valueOf(n_coperti - n_portate));
+                view.stampaTesto("Deve scelgliere almeno altre %s portate per convalidare la prenotazione.", String.valueOf(n_coperti - n_portate));
 
             boolean validità = false;
             Prenotabile portata = null;
@@ -298,21 +297,21 @@ public class Controller {
 
             boolean lavoro_validato = ristorante.getAddettoPrenotazione().validaCaricoLavoro(data_prenotazione, lavoro_persona, n_posti, prenotazione);
 
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
 
             if (lavoro_validato && quantità > 0)
-                InterfacciaTestuale.stampaTesto("Portata aggiunta all'ordine.");
+                view.stampaTesto("Portata aggiunta all'ordine.");
             else if (!lavoro_validato) {
 
-                InterfacciaTestuale.stampaTesto("Il carico di lavoro non ci permette di accettare un così alto numero di portate. Rimosso dalla lista: " + portata.getNome() + " x" + quantità);
+                view.stampaTesto("Il carico di lavoro non ci permette di accettare un così alto numero di portate. Rimosso dalla lista: " + portata.getNome() + " x" + quantità);
                 //tolgo la portata inserita che fa eccedere il carico di lavoro totale e reinserisco
                 scelte.remove(portata);
                 if (quantita_precedente != 0) scelte.put(portata, quantita_precedente);
 
-            } else if (quantità == 0) InterfacciaTestuale.stampaTesto("Portata non aggiunta all'ordine.");
+            } else if (quantità == 0) view.stampaTesto("Portata non aggiunta all'ordine.");
 
             InputDatiTestuale.premerePerContinuare();
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
 
             n_portate = 0;
             for (Integer value : scelte.values())
@@ -323,7 +322,7 @@ public class Controller {
         //Costruzione Prenotazione
         Prenotazione prenotazione = new Prenotazione(cliente, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
         ristorante.getAddettoPrenotazione().getPrenotazioni().add(prenotazione);
-        InterfacciaTestuale.stampaTesto("Prenotazione Registrata.\n");
+        view.stampaTesto("Prenotazione Registrata.\n");
     }
 
     /**
@@ -348,16 +347,16 @@ public class Controller {
     public static boolean controllaData(LocalDate data_prenotazione, LocalDate data_attuale, Ristorante ristorante){
         AddettoPrenotazione addettoPrenotazioni = ristorante.getAddettoPrenotazione();
         if (data_prenotazione == null) {
-            InterfacciaTestuale.stampaTesto(Costanti.DATA_NON_VALIDA);
+            view.stampaTesto(Costanti.DATA_NON_VALIDA);
             return false;
         } else if (!addettoPrenotazioni.controlloDataSiaSuccessiva(data_attuale, data_prenotazione)) {
-            InterfacciaTestuale.stampaTesto("La data inserita deve essere sucessiva alla data attuale (" + data_attuale + ")");
+            view.stampaTesto("La data inserita deve essere sucessiva alla data attuale (" + data_attuale + ")");
             return false;
         }else if (!addettoPrenotazioni.controlloDataSiaFeriale(data_prenotazione)) {
-            InterfacciaTestuale.stampaTesto("La data inserita corrisponde ad un giorno festivo, sono ammessi solo giorni feriali.");
+            view.stampaTesto("La data inserita corrisponde ad un giorno festivo, sono ammessi solo giorni feriali.");
             return false;
         }else if (!addettoPrenotazioni.controlloPostiDisponibiliInData(data_prenotazione, ristorante.getN_posti())) {
-            InterfacciaTestuale.stampaTesto("Il ristorante non ha posti disponibili in questa data (" + data_prenotazione.toString() + ")");
+            view.stampaTesto("Il ristorante non ha posti disponibili in questa data (" + data_prenotazione.toString() + ")");
             return false;
         }
         return true;
@@ -376,7 +375,7 @@ public class Controller {
 
         int scelta_inizializza = menu_inizializza.scegliConUscita();
 
-        InterfacciaTestuale.ripulisciConsole();
+        view.ripulisciConsole();
 
         Magazzino magazzino = ristorante.getMagazziniere().getMagazzino();
 
@@ -390,7 +389,7 @@ public class Controller {
                     int n_posti = InputDatiTestuale.leggiInteroConMinimo("\nInserisci il nuovo numero di posti del ristorante: ", 1);
                     //comuninco che il numero di posti è uguale a quello attuale
                     if(n_posti == ristorante.getN_posti())
-                        InterfacciaTestuale.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");
+                        view.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");
                     else
                         ristorante.setN_posti(n_posti);
                     InputDatiTestuale.premerePerContinuare();
@@ -400,7 +399,7 @@ public class Controller {
                     int lavoro_persona = InputDatiTestuale.leggiInteroConMinimo("\n" + Costanti.INS_LAVORO_PERSONA, 1);
                     //comuninco che il numero di lavoro per persona è uguale a quello attuale
                     if(lavoro_persona == ristorante.getLavoro_persona())
-                        InterfacciaTestuale.stampaTesto(Costanti.UGUALE_ATTUALE,"lavoro per persona");
+                        view.stampaTesto(Costanti.UGUALE_ATTUALE,"lavoro per persona");
                     else
                         ristorante.setLavoro_persona(lavoro_persona);
 
@@ -409,40 +408,40 @@ public class Controller {
                     prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona()));
 
                     //se il messaggio è vuoto vuol dire che non ci sono errori sia nei menu che nelle ricette
-                    InterfacciaTestuale.stampaElementiInvalidi(prenotabili_invalidi);
+                    view.stampaElementiInvalidi(prenotabili_invalidi);
                     InputDatiTestuale.premerePerContinuare();
                     break;
 
                 case 3://aggiungi ingrediente in magazzino
-                    Alimento nuovo_ingrediente = Controller.creaAlimento(Costanti.INGREDIENTE);
+                    Alimento nuovo_ingrediente = creaAlimento(Costanti.INGREDIENTE);
                     aggiungiAlimento(nuovo_ingrediente, magazzino);
                     break;
 
                 case 4://aggiungi extra in magazzino
-                    Alimento nuovo_extra = Controller.creaAlimento(Costanti.EXTRA);
+                    Alimento nuovo_extra = creaAlimento(Costanti.EXTRA);
                     aggiungiAlimento(nuovo_extra, magazzino);
                     break;
 
                 case 5://aggiungi bevanda in magazzino
-                    Alimento nuova_bevanda = Controller.creaAlimento(Costanti.BEVANDA);
+                    Alimento nuova_bevanda = creaAlimento(Costanti.BEVANDA);
                     aggiungiAlimento(nuova_bevanda, magazzino);
                     break;
 
                 case 6://aggiungi menu tematico
-                    Controller.creaMenuTematico(ristorante);
+                    creaMenuTematico(ristorante);
                     invalidi = ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Menu tematico creato");
                     break;
 
                 case 7://aggiungi piatto
-                    Controller.creaPiatto(ristorante);
+                    creaPiatto(ristorante);
                     invalidi = ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Piatto creato");
                     break;
             }
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
             scelta_inizializza = menu_inizializza.scegliConUscita();
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
         }
     }
 
@@ -450,18 +449,18 @@ public class Controller {
         InterfacciaTestuale.ripulisciConsole();
         boolean result = magazzino.inserisciAlimento(nuovo_alimento);
         String tipo = nuovo_alimento.getClass().getSimpleName();
-        if(result) InterfacciaTestuale.stampaTesto("%s aggiunt* al magazzino", tipo);
-        else InterfacciaTestuale.stampaTesto("%s già presente in magazzino", tipo);
+        if(result) view.stampaTesto("%s aggiunt* al magazzino", tipo);
+        else view.stampaTesto("%s già presente in magazzino", tipo);
         InputDatiTestuale.premerePerContinuare();
     }
 
     public static void aggiungiPrenotabile(ArrayList<Prenotabile> invalidi, String mex) {
         InterfacciaTestuale.ripulisciConsole();
         if (invalidi.isEmpty()){
-            InterfacciaTestuale.stampaTesto(mex);
+            view.stampaTesto(mex);
             InputDatiTestuale.premerePerContinuare();
         } else{
-            InterfacciaTestuale.stampaElementiInvalidi(invalidi);
+            view.stampaElementiInvalidi(invalidi);
             InputDatiTestuale.premerePerContinuare();
         }
     }
@@ -477,7 +476,7 @@ public class Controller {
         //precondizione: il tipo dell'alimento non è null
         if (tipo == null) throw new IllegalArgumentException("Tipo alimento non valido");
 
-        InterfacciaTestuale.stampaTesto("Inserisci i dati dell'alimento di tipo: %s", tipo);
+        view.stampaTesto("Inserisci i dati dell'alimento di tipo: %s", tipo);
         String nome = InputDatiTestuale.leggiStringaConSpazio(Costanti.INS_NOME);
         float quantita = (float) InputDatiTestuale.leggiDoubleConMinimo(Costanti.INS_QTA, 0);
         String unita_misura = InputDatiTestuale.leggiStringaNonVuota(Costanti.INS_MISURA);
@@ -558,7 +557,7 @@ public class Controller {
 
         do {
             //prima mostro i piatti presenti nel ristorante
-            InterfacciaTestuale.mostraPiatti(menu_ristorante);
+            view.mostraPiatti(menu_ristorante);
 
             String nome_piatto = InputDatiTestuale.leggiStringaConSpazio(Costanti.INS_NOME);
             //flag per salvarmi se il piatto è stato trovato o meno
@@ -571,10 +570,10 @@ public class Controller {
                     break;
                 }
             }
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
 
-            if (!trovato) InterfacciaTestuale.stampaTesto("Piatto non trovato o già inserito nel menu");
-            else InterfacciaTestuale.stampaTesto("Piatto aggiunto al menu");
+            if (!trovato) view.stampaTesto("Piatto non trovato o già inserito nel menu");
+            else view.stampaTesto("Piatto aggiunto al menu");
 
             InputDatiTestuale.premerePerContinuare();
             //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro piatto se il piatto non è stato trovato
@@ -604,7 +603,7 @@ public class Controller {
         //aggiunta degli ingredienti alla ricetta
         ArrayList<Alimento> ingredienti_nuovo_piatto = new ArrayList<>();
         do {
-            InterfacciaTestuale.mostraAlimenti(ristorante.getMagazziniere().getMagazzino().getIngredienti());
+            view.mostraAlimenti(ristorante.getMagazziniere().getMagazzino().getIngredienti());
 
             String nome_ingrediente = InputDatiTestuale.leggiStringaConSpazio("\nInserisci il nome dell'ingrediente: ");
             Ingrediente nuovo_ingrediente = new Ingrediente();
@@ -624,11 +623,11 @@ public class Controller {
                 }
             }
 
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
             //informo l'utente dell'esito dell'operazione di aggiunta dell'ingrediente alla ricetta
-            if (!trovato) InterfacciaTestuale.stampaTesto("Ingrediente non trovato o già inserito nella ricetta");
-            else if(nuovo_ingrediente.getQta() == 0.0) InterfacciaTestuale.stampaTesto("Quantità non valida");
-            else InterfacciaTestuale.stampaTesto("Ingrediente aggiunto alla ricetta");
+            if (!trovato) view.stampaTesto("Ingrediente non trovato o già inserito nella ricetta");
+            else if(nuovo_ingrediente.getQta() == 0.0) view.stampaTesto("Quantità non valida");
+            else view.stampaTesto("Ingrediente aggiunto alla ricetta");
 
             InputDatiTestuale.premerePerContinuare();
             //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro ingrediente se l'ingrediente non è stato trovato

@@ -184,7 +184,7 @@ public class Magazziniere extends Persona {
             magazzino.setQtaAlimento(alimento);
         }
         //svuoto la lista della spesa una volta aggiornato il magazzino
-        this.lista_spesa.clear();
+        lista_spesa.clear();
     }
 
     /**

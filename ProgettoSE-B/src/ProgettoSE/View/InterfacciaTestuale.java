@@ -147,19 +147,16 @@ public class InterfacciaTestuale {
     public static void mostraConsumoProcapite(ArrayList<Alimento> alimenti) {
         //precodizione: alimenti non nullo
         if(alimenti == null) throw new IllegalArgumentException("Parametri non validi");
+
         //stampo a video il titolo sfruttando il polimorfismo
-        if (alimenti.get(0) instanceof Bevanda) {
-            System.out.println("\nLista delle bevande con i relativi consumi procapite: ");
-        } else if (alimenti.get(0) instanceof Extra) {
-            System.out.println("\nLista degli extra con i relativi consumi procapite: ");
-        }
+        System.out.println("\nLista di " + alimenti.get(0).getClass().getSimpleName() + " con i relativi consumi procapite: ");
+
         //stampo a video gli alimenti con i relativi consumi procapite sfruttando il polimorfismo
         for (Alimento alimento : alimenti) {
+            System.out.printf("\n- " + alimento.getNome() + ", ");
             if (alimento instanceof Bevanda) {
-                System.out.printf("- " + alimento.getNome() + ", ");
                 System.out.printf("consumo procapite: " + ((Bevanda) alimento).getCons_procapite() + "\n");
             } else if (alimento instanceof Extra) {
-                System.out.printf("- " + alimento.getNome() + ", ");
                 System.out.printf("consumo procapite: " + ((Extra) alimento).getCons_procapite() + "\n");
             }
         }
@@ -184,7 +181,7 @@ public class InterfacciaTestuale {
         }
         //stampo a video gli alimenti sfruttando il polimorfismo
         for (Alimento alimento : alimenti) {
-            System.out.printf("- " + alimento.getNome() + "\n");
+            System.out.printf("\n- " + alimento.getNome() );
         }
     }
 
@@ -296,13 +293,13 @@ public class InterfacciaTestuale {
     }
 
 
-    public static void stampaListaSpesa(ArrayList<Alimento> lista_spesa){
-        if (lista_spesa == null) System.out.println("Non c'è nessuna prenotazione per questa data");
+    public void stampaListaSpesa(ArrayList<Alimento> lista_spesa){
+        if (lista_spesa == null) System.out.println("\nNon c'è nessuna prenotazione per questa data");
         else if(lista_spesa.isEmpty()) System.out.println("\n\nLe disponibilità in magazzino riescono a soddisfare tutte le prenotazioni della giornata senza richiedere l'acquisto di ulteriori alimenti\n\n");
         else{
             String messaggio = "";
             for (Alimento alimento : lista_spesa) {
-                messaggio += "- " + alimento.getNome() + " in quantità pari a: " + String.format("%.2f", alimento.getQta()) + " " + alimento.getMisura() + "\n";
+                messaggio += "\n- " + alimento.getNome() + " in quantità pari a: " + String.format("%.2f", alimento.getQta()) + " " + alimento.getMisura() + "\n";
             }
             System.out.println(messaggio);
         }

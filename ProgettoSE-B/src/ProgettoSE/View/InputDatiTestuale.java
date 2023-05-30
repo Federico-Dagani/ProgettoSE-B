@@ -43,7 +43,7 @@ public class InputDatiTestuale {
             if (lettura.length() > 0)
                 finito = true;
             else
-                System.out.println(ERRORE_STRINGA_VUOTA);
+                System.out.println("\n"+ERRORE_STRINGA_VUOTA);
         } while (!finito);
 
         return lettura;
@@ -59,7 +59,7 @@ public class InputDatiTestuale {
                 valoreLetto = lettura.charAt(0);
                 finito = true;
             } else {
-                System.out.println(ERRORE_STRINGA_VUOTA);
+                System.out.println("\n"+ERRORE_STRINGA_VUOTA);
             }
         } while (!finito);
         return valoreLetto;
@@ -89,7 +89,7 @@ public class InputDatiTestuale {
                 valoreLetto = lettore.nextInt();
                 finito = true;
             } catch (InputMismatchException e) {
-                System.out.println(ERRORE_FORMATO);
+                System.out.println("\n"+ERRORE_FORMATO);
                 String daButtare = lettore.next();
             }
         } while (!finito);
@@ -126,7 +126,7 @@ public class InputDatiTestuale {
             if (valoreLetto >= minimo)
                 finito = true;
             else
-                System.out.println(ERRORE_MINIMO + minimo);
+                System.out.println("\n"+ERRORE_MINIMO + minimo);
         } while (!finito);
 
         return valoreLetto;
@@ -153,7 +153,7 @@ public class InputDatiTestuale {
         boolean finito = false;
         double valoreLetto = 0;
         do {
-            System.out.print(messaggio);
+            System.out.print("\n"+messaggio);
             try {
                 valoreLetto = lettore.nextDouble();
                 finito = true;
@@ -193,7 +193,7 @@ public class InputDatiTestuale {
     public static void premerePerContinuare(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try{
-            System.out.println("\nPremere un tasto per continuare ... ");
+            System.out.println("\n\nPremere un tasto per continuare ... ");
             br.readLine();
         } catch (IOException e){
             e.printStackTrace();
