@@ -19,24 +19,23 @@ public class InterfacciaTestuale {
     /**
      * <h2>Metodo che stampa a video il menu del giorno</h2>
      * <b>Precondizione: </b>ristorante e data non nulli<br>
-     * @param ristorante
      * @param data data di cui si vuole visualizzare il menu
      * @return true se il menu è vuoto, false altrimenti
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static boolean stampaMenuDelGiorno(Ristorante ristorante, LocalDate data) {
-        //precondizione: gestore e data non nulli
-        if(ristorante == null || data == null) throw new IllegalArgumentException("Parametri non validi");
+    public static boolean stampaMenuDelGiorno(ArrayList<Prenotabile> menu_del_giorno, LocalDate data) {
+        //precondizione: menu_del_giorno e data non nulli
+        if(menu_del_giorno == null || data == null) throw new IllegalArgumentException("Parametri non validi");
         ripulisciConsole();
         //se il menu è vuoto stampo un messaggio e ritorno true
-        if (ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data).isEmpty()) {
+        if (menu_del_giorno.isEmpty()) {
             System.out.println("Non ci sono piatti disponibili per il giorno " + data);
             return true;
         } else {
             System.out.println("\nIl menù disponibile per il giorno " + data + " offre queste specialità:");
             System.out.println("(può scegliere sia i piatti all'interno del menù alla carta che i menù tematici presenti) \n");
             //ciclo l'arraylist di prenotabili e stampo a video i piatti e i menù tematici
-            for (Prenotabile prenotabile : ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data)) {
+            for (Prenotabile prenotabile : menu_del_giorno) {
                 //stampo i piatti
                 if (prenotabile instanceof Piatto) {
                     Piatto piatto = (Piatto) prenotabile;
@@ -293,19 +292,21 @@ public class InterfacciaTestuale {
 
 
     public static void stampaTesto(String messaggio, String elemento){
-        System.out.printf("\n"+String.format(messaggio, elemento));
+        System.out.printf("\n" + String.format(messaggio, elemento));
     }
 
-    public static void stampaTesto(String template, String[] elementi){
-        int numPlaceholders = template.length() - template.replace("%s", "").length();
-        if (numPlaceholders != elementi.length) {
-            throw new IllegalArgumentException("Number of placeholders does not match the number of values.");
+
+    public static void stampaListaSpesa(ArrayList<Alimento> lista_spesa){
+        if (lista_spesa == null) System.out.println("Non c'è nessuna prenotazione per questa data");
+        else if(lista_spesa.isEmpty()) System.out.println("\n\nLe disponibilità in magazzino riescono a soddisfare tutte le prenotazioni della giornata senza richiedere l'acquisto di ulteriori alimenti\n\n");
+        else{
+            String messaggio = "";
+            for (Alimento alimento : lista_spesa) {
+                messaggio += "- " + alimento.getNome() + " in quantità pari a: " + String.format("%.2f", alimento.getQta()) + " " + alimento.getMisura() + "\n";
+            }
+            System.out.println(messaggio);
         }
-
-        String formattedString = String.format(template, (Object[]) elementi);
-        System.out.println("\n"+formattedString);
     }
-
 
     /**
      * <h2>Metodo utilizzato nella stampa a video per pulire l'interfaccia</h2>

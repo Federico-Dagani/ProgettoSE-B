@@ -25,12 +25,12 @@ public class InputDatiTestuale {
     }
 
     public static String leggiStringa(String messaggio) {
-        System.out.print(messaggio);
+        System.out.print("\n"+messaggio);
         return lettore.next();
     }
 
     public static String leggiStringaConSpazio(String messaggio){
-        System.out.printf(messaggio);
+        System.out.printf("\n"+messaggio);
         return lettore.next();
     }
 
@@ -84,7 +84,7 @@ public class InputDatiTestuale {
         boolean finito = false;
         int valoreLetto = 0;
         do {
-            System.out.print(messaggio);
+            System.out.print("\n"+messaggio);
             try {
                 valoreLetto = lettore.nextInt();
                 finito = true;

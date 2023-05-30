@@ -109,13 +109,13 @@ public class AddettoPrenotazione extends Persona {
      * <h2>Metodo che calcola il menu del giorno relativo ad una data inserita</h2>
      * <b>Precondizione: </b>la data attuale è valida <br>
      * <b>Postcondizione: </b>il menu del giorno è stato calcolato
-     * @param data_attuale la data attuale
+     * @param data la data attuale
      * @throws IllegalArgumentException se la data attuale non è valida
      * @return ArrayList<Prenotabile> il menu disponibile in data inserita
      */
-    public ArrayList<Prenotabile> calcolaMenuDelGiorno(LocalDate data_attuale) {
+    public ArrayList<Prenotabile> calcolaMenuDelGiorno(LocalDate data) {
         //precondizione: la data attuale è valida
-        if (data_attuale == null) throw new IllegalArgumentException("La data attuale non è valida");
+        if (data == null) throw new IllegalArgumentException("La data attuale non è valida");
         ArrayList<Prenotabile> menu_del_giorno = new ArrayList<>();
         for (Prenotabile prenotabile : menu) {
             //prendo le disponibilità del piatto/menu tematico
@@ -123,7 +123,7 @@ public class AddettoPrenotazione extends Persona {
             int inizio = 0;
             //per ogni disponibilità, controllo se la data attuale è compresa tra la data di inizio e di fine disponibilità
             for (int i = 0; i < disponibilita.toArray().length / 2; i++) {
-                if( data_attuale.getDayOfYear() >= disponibilita.get(inizio).getDayOfYear() && data_attuale.getDayOfYear() <= disponibilita.get(inizio+1).getDayOfYear() && !menu_del_giorno.contains(prenotabile)){
+                if( data.getDayOfYear() >= disponibilita.get(inizio).getDayOfYear() && data.getDayOfYear() <= disponibilita.get(inizio+1).getDayOfYear() && !menu_del_giorno.contains(prenotabile)){
                     menu_del_giorno.add(prenotabile);
                 }
                 inizio += 2;
@@ -135,38 +135,20 @@ public class AddettoPrenotazione extends Persona {
         return menu_del_giorno;
     }
 
-    /**
-     * <h2>Metodo che esegue diversi controlli sulla data</h2>
-     * <b>Precondizione: </b>il numero dei posti del ristorante è positivo <br>
-     * <b>Postcondizione: </b>la data inserita è corretta
-     * @param data_attuale la data attuale
-     * @param stringa_data_prenotazione data della prenotazione del cliente (di tipo String)
-     * @throws IllegalArgumentException il numero dei posti è negativo
-     * @return un intero rappresentate un eventuale messaggio d'errore oppure la data della prenotazione (di tipo LocalDate) in caso non ci siano errori <br>
-     * <b>Legenda: </b> <br>
-     * <b>1</b> se il formato della data non è valido <br>
-     * <b>2</b> se la data inserita corrisponde o precede la data attuale <br>
-     * <b>3</b> se il ristorante ha esaurito i posti disponibili in quella data <br>
-     * <b>4</b> se la data inserita è di sabato o di domenica <br>
-     * <b>0</b> se la data inserita è corretta <br>
-     */
-    public int controlloDataPrenotazione(LocalDate data_attuale, String stringa_data_prenotazione, int posti_ristorante) {
 
-        //precondizioni: il numero dei posti del ristorante è maggiore di 0
-        if (posti_ristorante <= 0) throw new IllegalArgumentException("Il numero dei posti del ristorante non è valido");
+    public boolean controlloDataSiaSuccessiva(LocalDate data_attuale, LocalDate data_prenotazione){
+        if(data_prenotazione.isBefore(data_attuale) || data_prenotazione.isEqual(data_attuale)) return false;
+        return true;
+    }
 
-        LocalDate data_prenotazione = Tempo.parsaData(stringa_data_prenotazione);
-        if(data_prenotazione == null)
-            return 1;
-        if (data_prenotazione.isBefore(data_attuale) || data_prenotazione.isEqual(data_attuale))
-            return 2;
-        if (posti_ristorante - calcolaPostiOccupati(data_prenotazione) == 0)
-            return 3;
-        if(data_prenotazione.getDayOfWeek().getValue() == 7 || data_prenotazione.getDayOfWeek().getValue() == 6)
-            return 4;
-        //postcondizione: la data inserita è corretta
-        assert data_prenotazione.isAfter(data_attuale);
-        return 0;
+    public boolean controlloPostiDisponibiliInData(LocalDate data_prenotazione, int posti_ristorante){
+        if (posti_ristorante - calcolaPostiOccupati(data_prenotazione) == 0) return false;
+        return true;
+    }
+
+    public boolean controlloDataSiaFeriale(LocalDate data_prenotazione){
+        if(data_prenotazione.getDayOfWeek().getValue() == 7 || data_prenotazione.getDayOfWeek().getValue() == 6) return false;
+        return true;
     }
 
     /**
