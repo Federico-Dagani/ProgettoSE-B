@@ -10,6 +10,8 @@ import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Tempo;
 import ProgettoSE.Controller.Controller;
 import ProgettoSE.View.InterfacciaTestuale;
+import ProgettoSE.View.View;
+
 //importa classi per gestione input da tastiera
 import java.io.IOException;
 //importa classi per utilizzo costrutti
@@ -20,15 +22,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException, DateTimeParseException {
 
-        InterfacciaTestuale.benvenuto();
+        //scelta della interfaccia utente
+        View view = new InterfacciaTestuale();
 
-        Gestore gestore = new Gestore(InterfacciaTestuale.inserisciNomeGestore(), null);
+        Controller controller = new Controller(view);
+
+        view.benvenuto();
+
+        Gestore gestore = new Gestore(view.inserisciNomeGestore(), null);
 
         Tempo data_attuale = new Tempo(LocalDate.now());
 
-        Controller.inizializzazione(gestore);
+        controller.inizializzazione(gestore);
 
-        Controller.eseguiIterazioni(gestore, data_attuale);
+        controller.eseguiIterazioni(gestore, data_attuale);
     }
 
 }

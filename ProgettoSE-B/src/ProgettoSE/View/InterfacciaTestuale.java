@@ -3,9 +3,6 @@ package ProgettoSE.View;
 import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Alimentari.Bevanda;
 import ProgettoSE.Model.Alimentari.Extra;
-import ProgettoSE.Model.Alimentari.Ingrediente;
-import ProgettoSE.Model.Attori.Gestore.Gestore;
-import ProgettoSE.Model.Attori.Gestore.Ristorante;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
@@ -15,7 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InterfacciaTestuale {
+public class InterfacciaTestuale implements View {
     /**
      * <h2>Metodo che stampa a video il menu del giorno</h2>
      * <b>Precondizione: </b>ristorante e data non nulli<br>
@@ -23,7 +20,7 @@ public class InterfacciaTestuale {
      * @return true se il menu è vuoto, false altrimenti
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static boolean stampaMenuDelGiorno(ArrayList<Prenotabile> menu_del_giorno, LocalDate data) {
+    public boolean stampaMenuDelGiorno(ArrayList<Prenotabile> menu_del_giorno, LocalDate data) {
         //precondizione: menu_del_giorno e data non nulli
         if(menu_del_giorno == null || data == null) throw new IllegalArgumentException("Parametri non validi");
         ripulisciConsole();
@@ -78,7 +75,7 @@ public class InterfacciaTestuale {
      * <h2>Metodo per migliorare l'interazinoe con il programma</h2>
      * Comunica in output un messaggio i benvenuto con all'interno le info essenziali
      */
-    public static void benvenuto() {
+    public void benvenuto() {
         System.out.println(Costanti.CORNICE_SUP);
         System.out.println("|\t" + Costanti.BENVENUTO + "\t|");
         System.out.println(Costanti.CORNICE_INF);
@@ -90,7 +87,7 @@ public class InterfacciaTestuale {
      * <h2>Metodo per l'inserimento del nome del gestore</h2>
      * @return nome del gestore
      */
-    public static String inserisciNomeGestore() {
+    public String inserisciNomeGestore() {
         return InputDatiTestuale.leggiStringaConSpazio("Benvenuto, inserisca il nome del gestore del ristorante: ");
     }
 
@@ -99,13 +96,13 @@ public class InterfacciaTestuale {
      * @param list lista contenente i prenotabili presenti nei dati di inizializzazione che sono stati
      *             ritenuti invalidi e quindi eliminati dal modello
      */
-    public static void stampaInizializzazione(ArrayList<Prenotabile> list){
+    public void stampaInizializzazione(ArrayList<Prenotabile> list){
         System.out.printf("\nIl gestore sta inizializzando il ristorante ...");
         stampaElementiInvalidi(list);
         System.out.println("\nInizializzazione automatica del ristorante completata.\n");
     }
 
-    public static void stampaElementiInvalidi(ArrayList<Prenotabile> list){
+    public void stampaElementiInvalidi(ArrayList<Prenotabile> list){
         if(!list.isEmpty()){
             System.out.println("\nElementi invalidi trovati:");
             list.forEach(prenotabile -> System.out.printf("\n\t " + prenotabile.getNome()));
@@ -118,7 +115,7 @@ public class InterfacciaTestuale {
      * @param scelte HashMap contenente i piatti e i menù tematici scelti finora con relativa quantità
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static void stampaScelte(HashMap<Prenotabile, Integer> scelte) {
+    public void stampaScelte(HashMap<Prenotabile, Integer> scelte) {
         //precondizione: scelte non nulle
         if(scelte == null) throw new IllegalArgumentException("Parametri non validi");
         //se è vuoto evito di stampare delle stringhe inutili ed esco dal metodo
@@ -144,7 +141,7 @@ public class InterfacciaTestuale {
      * @param alimenti ArrayList di tipo Alimento contenente gli extra o le bevande
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static void mostraConsumoProcapite(ArrayList<Alimento> alimenti) {
+    public void mostraConsumoProcapite(ArrayList<Alimento> alimenti) {
         //precodizione: alimenti non nullo
         if(alimenti == null) throw new IllegalArgumentException("Parametri non validi");
 
@@ -168,17 +165,11 @@ public class InterfacciaTestuale {
      * @param alimenti ArrayList di tipo Alimento contenente gli extra o le bevande
      * @throws IllegalArgumentException se alimenti è nullo
      */
-    public static void mostraAlimenti(ArrayList<Alimento> alimenti) {
+    public void mostraAlimenti(ArrayList<Alimento> alimenti) {
         //precondizione: alimenti non nullo
         if(alimenti == null) throw new IllegalArgumentException("Parametri non validi");
-        //stampo a video il titolo sfruttando il polimorfismo
-        if (alimenti.get(0) instanceof Bevanda) {
-            System.out.println("\nLista delle bevande presenti nel ristorante: ");
-        } else if (alimenti.get(0) instanceof Extra) {
-            System.out.println("\nLista degli extra presenti nel ristorante:");
-        } else if (alimenti.get(0) instanceof Ingrediente) {
-            System.out.println("\nLista degli ingredienti presenti nel ristorante:");
-        }
+
+        System.out.println("\nLista di " + alimenti.get(0).getClass().getSimpleName() + " presenti nel ristorante: ");
         //stampo a video gli alimenti sfruttando il polimorfismo
         for (Alimento alimento : alimenti) {
             System.out.printf("\n- " + alimento.getNome() );
@@ -191,7 +182,7 @@ public class InterfacciaTestuale {
      * @param lavoro_persona
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    public static void mostraCaricoLavoroPersona(int lavoro_persona){
+    public void mostraCaricoLavoroPersona(int lavoro_persona){
         //precondizione: gestore non nullo
         if(lavoro_persona == 0) throw new IllegalArgumentException("Il lavoro persona non può essere nullo");
         System.out.println("\nIl carico di lavoro per persona è: " + lavoro_persona);
@@ -203,7 +194,7 @@ public class InterfacciaTestuale {
      * @param n_posti
      * @throws IllegalArgumentException se il gestore è nullo
      */
-    public static void mostraPostiDisponibili(int n_posti){
+    public void mostraPostiDisponibili(int n_posti){
         //precondizione: gestore non nullo
         if(n_posti == 0) throw new IllegalArgumentException("Il numero di posti non può essere nullo");
         System.out.println("\nIl numero di posti disponibili nel ristorante è: " + n_posti);
@@ -215,7 +206,7 @@ public class InterfacciaTestuale {
      * @param menu ArrayList di tipo Prenotabile contenente i menu tematici e i piatti
      * @throws IllegalArgumentException se il menu è nullo
      */
-    public static void mostraMenuTematici(ArrayList<Prenotabile> menu) {
+    public void mostraMenuTematici(ArrayList<Prenotabile> menu) {
         //precondizione: menu non nullo
         if(menu == null) throw new IllegalArgumentException("Il menu non può essere nullo");
         System.out.println("\n\nI menu tematici del menù alla carta sono i seguenti: ");
@@ -241,7 +232,7 @@ public class InterfacciaTestuale {
      * @param menu ArrayList di tipo Prenotabile contenente i piatti e i menu tematici
      * @throws IllegalArgumentException se il menu è nullo
      */
-    public static void mostraPiatti(ArrayList<Prenotabile> menu) {
+    public void mostraPiatti(ArrayList<Prenotabile> menu) {
         //precondizione: menu non nullo
         if(menu == null) throw new IllegalArgumentException("Il menu non può essere nullo");
         System.out.println("\n\nI piatti del menù alla carta sono i seguenti: ");
@@ -266,7 +257,7 @@ public class InterfacciaTestuale {
      * @param menu ArrayList di tipo Prenotabile contenente i piatti e i menu tematici
      * @throws IllegalArgumentException se il menu è nullo
      */
-    public static void mostraRicette(ArrayList<Prenotabile> menu) {
+    public void mostraRicette(ArrayList<Prenotabile> menu) {
         //precondizione: menu non nullo
         if(menu == null) throw new IllegalArgumentException("Il menu non può essere nullo");
         System.out.println("\n\nLe ricette del menù alla carta sono le seguenti: ");
@@ -283,12 +274,12 @@ public class InterfacciaTestuale {
         }
     }
 
-    public static void stampaTesto(String messaggio){
+    public void stampaTesto(String messaggio){
         System.out.printf("\n"+messaggio);
     }
 
 
-    public static void stampaTesto(String messaggio, String elemento){
+    public void stampaTesto(String messaggio, String elemento){
         System.out.printf("\n" + String.format(messaggio, elemento));
     }
 
@@ -308,7 +299,7 @@ public class InterfacciaTestuale {
     /**
      * <h2>Metodo utilizzato nella stampa a video per pulire l'interfaccia</h2>
      */
-    public static void ripulisciConsole() {
+    public void ripulisciConsole() {
         for (int i = 0; i < 30; i++)
             System.out.println();
     }

@@ -21,7 +21,7 @@ import ProgettoSE.Utility.Costanti;
 import ProgettoSE.Utility.MyMenu;
 
 import ProgettoSE.View.InputDatiTestuale;
-import ProgettoSE.Utility.MyMenu;
+import ProgettoSE.View.View;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,6 +30,11 @@ import java.util.Locale;
 
 public class Controller {
 
+    private View view;
+
+    public Controller(View view) {
+        this.view = view;
+    }
 
     /**
      * <h2>Metodo che inizializza il ristorante automaticamente</h2><br>
@@ -37,15 +42,15 @@ public class Controller {
      * @param gestore gestore del ristorante
      * @throws IllegalArgumentException se il gestore è nullo
      */
-    public static void inizializzazione(Gestore gestore) {
+    public void inizializzazione(Gestore gestore) {
         //precondizione: il gestore non deve essere nullo
         if (gestore == null) throw new IllegalArgumentException(Costanti.GESTORE_NON_NULLO);
         /*in questo caso l'interfaccia prenotabile fa da contratto tra la view ed il controller, infatti la view accede
          solamente al nome del piatto/menu, non conosce nient'altro */
-        InterfacciaTestuale.stampaInizializzazione(gestore.inizializzaRistorante());
+        view.stampaInizializzazione(gestore.inizializzaRistorante());
     }
 
-    public static void eseguiIterazioni(Gestore gestore, Tempo data_attuale){
+    public void eseguiIterazioni(Gestore gestore, Tempo data_attuale){
         //creazione dei menu a scelta
         MyMenu menu_attori = MyMenu.creaMenuStruttura(Costanti.ATTORI);
         MyMenu menu_gestore = MyMenu.creaMenuStruttura(Costanti.GESTORE);
@@ -53,27 +58,27 @@ public class Controller {
         MyMenu menu_inizializza = MyMenu.creaMenuStruttura(Costanti.INIZIALIZZAZIONE);
 
         if (InputDatiTestuale.yesOrNo("Vuoi modificare ulteriormente i dati di inizializzazione?")){
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
             modificaDatiIniziali(gestore.getRistorante(), menu_inizializza);
         }
-        InterfacciaTestuale.ripulisciConsole();
+        view.ripulisciConsole();
 
         int scelta_attore = menu_attori.scegliConUscita();
-        InterfacciaTestuale.ripulisciConsole();
+        view.ripulisciConsole();
         while (scelta_attore != 0) {
             switch (scelta_attore) {
 
                 case 1:
                     int scelta_funz_gestore = menu_gestore.scegliConUscita();
-                    InterfacciaTestuale.ripulisciConsole();
+                    view.ripulisciConsole();
                     while (scelta_funz_gestore != 0) {
                         scegliFunzionalitaGestore(scelta_funz_gestore, gestore.getRistorante());
                         InputDatiTestuale.premerePerContinuare();
-                        InterfacciaTestuale.ripulisciConsole();
+                        view.ripulisciConsole();
                         scelta_funz_gestore = menu_gestore.scegliConUscita();
-                        InterfacciaTestuale.ripulisciConsole();
+                        view.ripulisciConsole();
                     }
-                    InterfacciaTestuale.stampaTesto(Costanti.USCITA_MENU + Costanti.GESTORE.toUpperCase(Locale.ROOT));
+                    view.stampaTesto(Costanti.USCITA_MENU + Costanti.GESTORE.toUpperCase(Locale.ROOT));
                     break;
 
                 case 2:
@@ -82,26 +87,25 @@ public class Controller {
 
                 case 3:
                     int scelta_funz_tempo = menu_tempo.scegliConUscita();
-                    InterfacciaTestuale.ripulisciConsole();
+                    view.ripulisciConsole();
                     while (scelta_funz_tempo != 0) {
                         scegliFunzionalitaTemporali(scelta_funz_tempo, data_attuale, gestore);
                         InputDatiTestuale.premerePerContinuare();
-                        InterfacciaTestuale.ripulisciConsole();
+                        view.ripulisciConsole();
                         scelta_funz_tempo = menu_tempo.scegliConUscita();
-                        InterfacciaTestuale.ripulisciConsole();
+                        view.ripulisciConsole();
                     }
-                    InterfacciaTestuale.stampaTesto(Costanti.USCITA_MENU + Costanti.TEMPO.toUpperCase(Locale.ROOT));
+                    view.stampaTesto(Costanti.USCITA_MENU + Costanti.TEMPO.toUpperCase(Locale.ROOT));
                     break;
             }
             InputDatiTestuale.premerePerContinuare();
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
             scelta_attore = menu_attori.scegliConUscita();
-            InterfacciaTestuale.ripulisciConsole();
+            view.ripulisciConsole();
         }
 
-        System.out.println("\n" + Costanti.USCITA_MENU + Costanti.ATTORI.toUpperCase(Locale.ROOT));
-        System.out.println("\n" + Costanti.END);
-
+        view.stampaTesto("\n" + Costanti.USCITA_MENU + Costanti.ATTORI.toUpperCase(Locale.ROOT));
+        view.stampaTesto("\n" + Costanti.END);
     }
 
     /**
@@ -111,7 +115,7 @@ public class Controller {
      * @param ristorante
      * @throws IllegalArgumentException se il gestore è null
      */
-    private static void scegliFunzionalitaGestore(int scelta, Ristorante ristorante) {
+    private void scegliFunzionalitaGestore(int scelta, Ristorante ristorante) {
         //precondizione: ristorante != null
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
@@ -121,31 +125,31 @@ public class Controller {
 
         switch (scelta) {
             case 1:
-                InterfacciaTestuale.mostraCaricoLavoroPersona(ristorante.getLavoro_persona());
+                view.mostraCaricoLavoroPersona(ristorante.getLavoro_persona());
                 break;
             case 2:
-                InterfacciaTestuale.mostraPostiDisponibili(ristorante.getN_posti());
+                view.mostraPostiDisponibili(ristorante.getN_posti());
                 break;
             case 3:
-                InterfacciaTestuale.mostraAlimenti(bevande);
+                view.mostraAlimenti(bevande);
                 break;
             case 4:
-                InterfacciaTestuale.mostraAlimenti(extras);
+                view.mostraAlimenti(extras);
                 break;
             case 5:
-                InterfacciaTestuale.mostraConsumoProcapite(bevande);
+                view.mostraConsumoProcapite(bevande);
                 break;
             case 6:
-                InterfacciaTestuale.mostraConsumoProcapite(extras);
+                view.mostraConsumoProcapite(extras);
                 break;
             case 7:
-                InterfacciaTestuale.mostraMenuTematici(menu);
+                view.mostraMenuTematici(menu);
                 break;
             case 8:
-                InterfacciaTestuale.mostraPiatti(menu);
+                view.mostraPiatti(menu);
                 break;
             case 9:
-                InterfacciaTestuale.mostraRicette(menu);
+                view.mostraRicette(menu);
                 break;
         }
     }
@@ -159,7 +163,7 @@ public class Controller {
      * @param data_attuale data attuale del sistema
      * @param gestore gestore che ha effettuato l'accesso
      */
-    private static void scegliFunzionalitaTemporali(int scelta, Tempo data_attuale, Gestore gestore) {
+    private void scegliFunzionalitaTemporali(int scelta, Tempo data_attuale, Gestore gestore) {
         //precondizione: gestore != null
         if(gestore == null) throw new IllegalArgumentException(Costanti.GESTORE_NON_NULLO);
 
@@ -174,10 +178,10 @@ public class Controller {
                     LocalDate data_prenotazione = Tempo.parsaData(stringa_data_prenotazione);
 
                     if(data_prenotazione == null){
-                        InterfacciaTestuale.stampaTesto(Costanti.DATA_NON_VALIDA);
+                        view.stampaTesto(Costanti.DATA_NON_VALIDA);
                         data_errata = true;
                     }else if(data_prenotazione.isBefore(data_attuale.getData_corrente())){
-                        InterfacciaTestuale.stampaTesto("La data inserita è precedente alla data attuale (" + data_attuale.getData_corrente() + ")");
+                        view.stampaTesto("La data inserita è precedente alla data attuale (" + data_attuale.getData_corrente() + ")");
                         data_errata = true;
                     }else{
                         data_attuale.setData_corrente(data_prenotazione);
@@ -186,10 +190,10 @@ public class Controller {
                 }while (data_errata);
                 break;
         }
-        InterfacciaTestuale.stampaTesto("La data attuale è stata incrementata, ora è: " + data_attuale.getData_corrente() + ". La lista spesa è stata aggiornata.");
+        view.stampaTesto("La data attuale è stata incrementata, ora è: " + data_attuale.getData_corrente() + ". La lista spesa è stata aggiornata.");
 
         //Stampo la lista
-        InterfacciaTestuale.stampaListaSpesa(gestore.comunica(data_attuale.getData_corrente()));
+        view.stampaListaSpesa(gestore.comunica(data_attuale.getData_corrente()));
 
     }
 
@@ -201,12 +205,12 @@ public class Controller {
      * @param data_attuale data attuale
      * @throws IllegalArgumentException se i parametri non sono validi
      */
-    private static void inserisciPrenotazione(Ristorante ristorante, LocalDate data_attuale) {
+    private void inserisciPrenotazione(Ristorante ristorante, LocalDate data_attuale) {
 
         //precondizione: gestore != null && data_attuale != null
         if(ristorante == null || data_attuale == null) throw new IllegalArgumentException("Parametri non validi");
 
-        InterfacciaTestuale.stampaTesto("Inserimento dati NUOVA PRENOTAZIONE");
+        view.stampaTesto("Inserimento dati NUOVA PRENOTAZIONE");
 
         //NOME
         String nome_cliente = InputDatiTestuale.leggiStringaNonVuota("Nome cliente: ");
@@ -240,7 +244,7 @@ public class Controller {
     }
 
 
-    private static void inserisciSceltePrenotazione(Ristorante ristorante, LocalDate data_prenotazione, Cliente cliente, int n_coperti){
+    private void inserisciSceltePrenotazione(Ristorante ristorante, LocalDate data_prenotazione, Cliente cliente, int n_coperti){
 
         int lavoro_persona = ristorante.getLavoro_persona();
         int n_posti = ristorante.getN_posti();
@@ -332,7 +336,7 @@ public class Controller {
      * @param data_attuale data attuale
      * @return void
      */
-    private static LocalDate gestisciData(Ristorante ristorante, LocalDate data_attuale) {
+    private LocalDate gestisciData(Ristorante ristorante, LocalDate data_attuale) {
         //precondizione: ristorante != null
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
@@ -344,7 +348,7 @@ public class Controller {
         return data_prenotazione;
     }
 
-    public static boolean controllaData(LocalDate data_prenotazione, LocalDate data_attuale, Ristorante ristorante){
+    public boolean controllaData(LocalDate data_prenotazione, LocalDate data_attuale, Ristorante ristorante){
         AddettoPrenotazione addettoPrenotazioni = ristorante.getAddettoPrenotazione();
         if (data_prenotazione == null) {
             view.stampaTesto(Costanti.DATA_NON_VALIDA);
@@ -369,7 +373,7 @@ public class Controller {
      * @param ristorante
      * @throws IllegalArgumentException se il gestore è null
      */
-    private static void modificaDatiIniziali(Ristorante ristorante, MyMenu menu_inizializza){
+    private void modificaDatiIniziali(Ristorante ristorante, MyMenu menu_inizializza){
         //precondizione
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
@@ -445,8 +449,8 @@ public class Controller {
         }
     }
 
-    public static void aggiungiAlimento(Alimento nuovo_alimento, Magazzino magazzino){
-        InterfacciaTestuale.ripulisciConsole();
+    public void aggiungiAlimento(Alimento nuovo_alimento, Magazzino magazzino){
+        view.ripulisciConsole();
         boolean result = magazzino.inserisciAlimento(nuovo_alimento);
         String tipo = nuovo_alimento.getClass().getSimpleName();
         if(result) view.stampaTesto("%s aggiunt* al magazzino", tipo);
@@ -454,8 +458,8 @@ public class Controller {
         InputDatiTestuale.premerePerContinuare();
     }
 
-    public static void aggiungiPrenotabile(ArrayList<Prenotabile> invalidi, String mex) {
-        InterfacciaTestuale.ripulisciConsole();
+    public void aggiungiPrenotabile(ArrayList<Prenotabile> invalidi, String mex) {
+        view.ripulisciConsole();
         if (invalidi.isEmpty()){
             view.stampaTesto(mex);
             InputDatiTestuale.premerePerContinuare();
@@ -472,7 +476,7 @@ public class Controller {
      * @throws IllegalArgumentException se il tipo dell'alimento non è valido
      * @return Alimento
      */
-    public static Alimento creaAlimento(String tipo) {
+    public Alimento creaAlimento(String tipo) {
         //precondizione: il tipo dell'alimento non è null
         if (tipo == null) throw new IllegalArgumentException("Tipo alimento non valido");
 
@@ -502,7 +506,7 @@ public class Controller {
      * @throws IllegalArgumentException se il gestore è null
      * @return Prenotabile
      */
-    private static Prenotabile creaPrenotabile(String tipologia) {
+    private Prenotabile creaPrenotabile(String tipologia) {
         //precondizione: la tipologia non è null
         if (tipologia == null) throw new IllegalArgumentException("Tipologia non valida");
 
@@ -547,7 +551,7 @@ public class Controller {
      * @param ristorante ristorante a cui aggiungere il menu tematico
      * @throws IllegalArgumentException se il ristorante è null
      */
-    public static void creaMenuTematico(Ristorante ristorante) {
+    public void creaMenuTematico(Ristorante ristorante) {
         //precondizione: il ristorante non è null
         if (ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
@@ -591,7 +595,7 @@ public class Controller {
      * @param ristorante ristorante dove il piatto è creato
      * @throws IllegalArgumentException se il ristorante è null
      */
-    public static void creaPiatto(Ristorante ristorante) {
+    public void creaPiatto(Ristorante ristorante) {
         //precondizione: il ristorante non è null
         if (ristorante == null) throw new IllegalArgumentException(Costanti.GESTORE_NON_NULLO);
 

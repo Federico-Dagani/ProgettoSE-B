@@ -86,7 +86,8 @@ public class Gestore extends Persona {
         ristorante.getMagazziniere().creaListaSpesa(prenotazione_del_giorno);
 
         //STAMPA DELLA LISTA SPESA
-        ArrayList<Alimento> lista_spesa = ristorante.getMagazziniere().getLista_spesa();
+
+        ArrayList<Alimento> lista_spesa = new ArrayList<>(ristorante.getMagazziniere().getLista_spesa());
 
         //faccio aggiungere al magazziniere gli alimenti acquistati e mi faccio comunicare cosa sta aggiungendo
         ristorante.getMagazziniere().aggiungiSpesaInMagazzino();
