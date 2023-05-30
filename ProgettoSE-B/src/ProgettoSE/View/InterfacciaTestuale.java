@@ -19,7 +19,6 @@ public class InterfacciaTestuale {
     /**
      * <h2>Metodo che stampa a video il menu del giorno</h2>
      * <b>Precondizione: </b>ristorante e data non nulli<br>
-     * @param ristorante
      * @param data data di cui si vuole visualizzare il menu
      * @return true se il menu è vuoto, false altrimenti
      * @throws IllegalArgumentException se i parametri non sono validi
@@ -36,7 +35,7 @@ public class InterfacciaTestuale {
             System.out.println("\nIl menù disponibile per il giorno " + data + " offre queste specialità:");
             System.out.println("(può scegliere sia i piatti all'interno del menù alla carta che i menù tematici presenti) \n");
             //ciclo l'arraylist di prenotabili e stampo a video i piatti e i menù tematici
-            for (Prenotabile prenotabile : ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data)) {
+            for (Prenotabile prenotabile : menu_del_giorno) {
                 //stampo i piatti
                 if (prenotabile instanceof Piatto) {
                     Piatto piatto = (Piatto) prenotabile;
@@ -293,7 +292,7 @@ public class InterfacciaTestuale {
 
 
     public static void stampaTesto(String messaggio, String elemento){
-        System.out.printf("\n"+String.format(messaggio, elemento));
+        System.out.printf("\n" + String.format(messaggio, elemento));
     }
 
     public static void stampaTesto(String template, String[] elementi){

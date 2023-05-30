@@ -1,5 +1,6 @@
 package ProgettoSE.Model.Attori.Gestore;
 
+import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Attori.AddettoPrenotazione.Prenotazione;
 import ProgettoSE.Model.Attori.Persona;
 import ProgettoSE.Utility.LetturaFileXML;
@@ -68,11 +69,16 @@ public class Gestore extends Persona {
      * @return String messaggio
      * @throws IllegalArgumentException se la data non è valida
      */
-    public String comunica(LocalDate data_attuale) {
+    public ArrayList<Alimento> comunica(LocalDate data_attuale) {
+
         //precondizione data_attuale non null
         if (data_attuale == null) throw new IllegalArgumentException("Data non valida");
-        //se non ci sono prenotazioni per il giorno attuale non faccio nulla e ritorno un messaggio vuoto
-        if (ristorante.getAddettoPrenotazione().filtraPrenotazioniPerData(data_attuale).isEmpty()) return "";
+
+        ArrayList<Prenotazione> prenotazioni_del_giorno = ristorante.getAddettoPrenotazione().filtraPrenotazioniPerData(data_attuale);
+
+        //se non ci sono prenotazioni per il giorno attuale non faccio nulla e ritorno null
+        if (prenotazioni_del_giorno.isEmpty()) return null;
+
         //altrimenti unisco le prenotazioni del giorno in un'unica grande prenotazione
         Prenotazione prenotazione_del_giorno = ristorante.getAddettoPrenotazione().unisciPrenotazioni(ristorante.getAddettoPrenotazione().filtraPrenotazioniPerData(data_attuale));
         //faccio calcolare al magazziniere la lista della spesa basandosi sulla grande prenotazione
@@ -83,8 +89,7 @@ public class Gestore extends Persona {
         ristorante.getMagazziniere().portaInCucina(prenotazione_del_giorno);
         //faccio eliminare dal addetto prenotazione le prenotazioni vecchie comprese quelle in data odierna(che sono state già elaborate)
         ristorante.getAddettoPrenotazione().rimuoviPrenotazioniVecchie(data_attuale);
-        //postcondizione messaggio non null
-        assert messaggio != null;
-        return messaggio;
+
+        return lista_spesa;
     }
 }
