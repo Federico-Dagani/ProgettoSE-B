@@ -174,14 +174,10 @@ public class Magazziniere extends Persona {
      * @throws IllegalArgumentException se la lista spesa è nulla
      * @return String messaggio di aggiornamento del magazzino
      */
-    public String aggiungiSpesaInMagazzino() {
+    public void aggiungiSpesaInMagazzino() {
         //precondizione: la lista spesa non è nulla
         if(lista_spesa == null) throw new IllegalArgumentException("La lista spesa non può essere nulla");
-        if (this.lista_spesa.isEmpty())
-            return "\nLe disponibilità in magazzino riescono a soddisfare tutte le prenotazioni della giornata senza richiedere l'acquisto di ulteriori alimenti\n";
-        String messaggio = "\nIl magazziniere sta aggiornando il magazzino andando ad aggiungere degli alimenti secondo la seguente lista della spesa: \n";
         for (Alimento alimento : lista_spesa) {
-            messaggio += "- " + alimento.getNome() + " in quantità pari a: " + String.format("%.2f", alimento.getQta()) + " " + alimento.getMisura() + "\n";
             float qta_in_magazzino = magazzino.getAlimento(alimento.getNome()).getQta();
             float nuova_qta = qta_in_magazzino + alimento.getQta();
             alimento.setQta(nuova_qta);
@@ -189,10 +185,6 @@ public class Magazziniere extends Persona {
         }
         //svuoto la lista della spesa una volta aggiornato il magazzino
         this.lista_spesa.clear();
-        //postcondizione: la lista spesa è vuota e il messaggio non è nullo
-        assert lista_spesa.isEmpty();
-        assert messaggio != null;
-        return messaggio;
     }
 
     /**

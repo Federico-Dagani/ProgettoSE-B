@@ -80,11 +80,16 @@ public class Gestore extends Persona {
         if (prenotazioni_del_giorno.isEmpty()) return null;
 
         //altrimenti unisco le prenotazioni del giorno in un'unica grande prenotazione
-        Prenotazione prenotazione_del_giorno = ristorante.getAddettoPrenotazione().unisciPrenotazioni(ristorante.getAddettoPrenotazione().filtraPrenotazioniPerData(data_attuale));
+        Prenotazione prenotazione_del_giorno = ristorante.getAddettoPrenotazione().unisciPrenotazioni(prenotazioni_del_giorno);
+
         //faccio calcolare al magazziniere la lista della spesa basandosi sulla grande prenotazione
         ristorante.getMagazziniere().creaListaSpesa(prenotazione_del_giorno);
+
+        //STAMPA DELLA LISTA SPESA
+        ArrayList<Alimento> lista_spesa = ristorante.getMagazziniere().getLista_spesa();
+
         //faccio aggiungere al magazziniere gli alimenti acquistati e mi faccio comunicare cosa sta aggiungendo
-        String messaggio = ristorante.getMagazziniere().aggiungiSpesaInMagazzino();
+        ristorante.getMagazziniere().aggiungiSpesaInMagazzino();
         //faccio eliminare dal magazzino gli alimenti che sono stati consumati in cucina
         ristorante.getMagazziniere().portaInCucina(prenotazione_del_giorno);
         //faccio eliminare dal addetto prenotazione le prenotazioni vecchie comprese quelle in data odierna(che sono state già elaborate)

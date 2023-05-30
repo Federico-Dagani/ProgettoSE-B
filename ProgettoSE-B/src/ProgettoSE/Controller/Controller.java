@@ -213,11 +213,9 @@ public class Controller {
         String nome_cliente = InputDatiTestuale.leggiStringaNonVuota("Nome cliente: ");
         Cliente cliente = new Cliente(nome_cliente);
 
-        //MENU VUOTO
-        boolean menu_vuoto;
-
         //DATA
         LocalDate data_prenotazione = gestisciData(ristorante, data_attuale);
+
 
         //variabili di supporto
         int lavoro_persona = ristorante.getLavoro_persona();
@@ -240,14 +238,93 @@ public class Controller {
 
         InterfacciaTestuale.ripulisciConsole();
 
-        if (!menu_vuoto) {
-            //Costruzione Prenotazione
-            Prenotazione prenotazione = new Prenotazione(cliente, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
-            ristorante.getAddettoPrenotazione().getPrenotazioni().add(prenotazione);
-            System.out.printf("Prenotazione Registrata.\n");
-        }else System.out.println("Il menu è attualmente vuoto, le chiediamo di cambiare data della prenotazione");
     }
 
+
+    private static void inserisciSceltePrenotazione(Ristorante ristorante, LocalDate data_prenotazione, Cliente cliente, int n_coperti){
+
+        int lavoro_persona = ristorante.getLavoro_persona();
+        int n_posti = ristorante.getN_posti();
+
+        //CALCOLO CONSUMO BEVANDE E GENERI EXTRA
+        HashMap<Alimento, Float> cons_bevande = ristorante.getMagazziniere().calcolaConsumoBevande(n_coperti);
+        HashMap<Alimento, Float> cons_extra = ristorante.getMagazziniere().calcolaConsumoExtras(n_coperti);
+
+        //Gestisco le scelte dei commensali
+        HashMap<Prenotabile, Integer> scelte = new HashMap<>();
+        int n_portate = 0;
+        ArrayList<Prenotabile> menu_del_giorno = ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione);
+        //Se non il menu è vuoto non faccio fare nessuna scelta
+        if (menu_del_giorno.isEmpty()){
+            InterfacciaTestuale.stampaTesto("Il menu è attualmente vuoto, le chiediamo di cambiare data della prenotazione");
+            return;
+        }
+
+        do {
+            InterfacciaTestuale.stampaMenuDelGiorno(ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione), data_prenotazione);
+
+            //mostro un riepilogo delle scelyìte già effettuate
+            InterfacciaTestuale.stampaScelte(scelte);
+
+            if (n_portate < n_coperti)
+                InterfacciaTestuale.stampaTesto("Deve scelgliere almeno altre %s portate per convalidare la prenotazione.", String.valueOf(n_coperti - n_portate));
+
+            boolean validità = false;
+            Prenotabile portata = null;
+
+            do {
+                String scelta = InputDatiTestuale.leggiStringa("Inserisca il nome della portata da ordinare: ");
+                //controllo che la portata scelta sia presente nel menu del giorno
+                for (Prenotabile prenotabile : menu_del_giorno) {
+                    if (prenotabile.getNome().equalsIgnoreCase(scelta)) {
+                        portata = prenotabile;
+                        validità = true;
+                    }
+                }
+                if (!validità)
+                    InputDatiTestuale.leggiStringa("Portata non presente nel menu del giorno.");
+            } while (!validità);
+
+            int quantità = InputDatiTestuale.leggiInteroConMinimo("Inserisca le porzioni desiderate di " + portata.getNome().toLowerCase(Locale.ROOT) + ": ", 0);
+
+            //devo leggere il value precedente e sommarlo alla nuova quantità aggiunta, dopodichè rimetto la value nuova nella Map
+            Integer quantita_precedente = scelte.get(portata);
+            if (quantita_precedente == null)
+                quantita_precedente = 0;
+            if (quantita_precedente + quantità != 0)
+                scelte.put(portata, quantità + quantita_precedente);
+
+            Prenotazione prenotazione = new Prenotazione(null, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
+
+            boolean lavoro_validato = ristorante.getAddettoPrenotazione().validaCaricoLavoro(data_prenotazione, lavoro_persona, n_posti, prenotazione);
+
+            InterfacciaTestuale.ripulisciConsole();
+
+            if (lavoro_validato && quantità > 0)
+                InterfacciaTestuale.stampaTesto("Portata aggiunta all'ordine.");
+            else if (!lavoro_validato) {
+
+                InterfacciaTestuale.stampaTesto("Il carico di lavoro non ci permette di accettare un così alto numero di portate. Rimosso dalla lista: " + portata.getNome() + " x" + quantità);
+                //tolgo la portata inserita che fa eccedere il carico di lavoro totale e reinserisco
+                scelte.remove(portata);
+                if (quantita_precedente != 0) scelte.put(portata, quantita_precedente);
+
+            } else if (quantità == 0) InterfacciaTestuale.stampaTesto("Portata non aggiunta all'ordine.");
+
+            InputDatiTestuale.premerePerContinuare();
+            InterfacciaTestuale.ripulisciConsole();
+
+            n_portate = 0;
+            for (Integer value : scelte.values())
+                n_portate += value;
+
+        } while (n_portate < n_coperti || InputDatiTestuale.yesOrNo("Ogni commensale ha ordinato almeno una portata ciascuno, vuole ordinare altre portate?"));
+
+        //Costruzione Prenotazione
+        Prenotazione prenotazione = new Prenotazione(cliente, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
+        ristorante.getAddettoPrenotazione().getPrenotazioni().add(prenotazione);
+        InterfacciaTestuale.stampaTesto("Prenotazione Registrata.\n");
+    }
 
     /**
      * <h2>Metodo che compie diversi controlli sulla data inserita</h2>
