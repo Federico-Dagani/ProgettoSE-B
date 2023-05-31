@@ -20,7 +20,6 @@ import ProgettoSE.Model.Produzione.Ricetta;
 import ProgettoSE.Utility.Costanti;
 import ProgettoSE.Utility.MyMenu;
 
-import ProgettoSE.View.InputDatiTestuale;
 import ProgettoSE.View.View;
 
 import java.time.LocalDate;
@@ -30,7 +29,7 @@ import java.util.Locale;
 
 public class Controller {
 
-    private View view;
+    private final View view;
 
     public Controller(View view) {
         this.view = view;
@@ -45,7 +44,7 @@ public class Controller {
     public void inizializzazione(Gestore gestore) {
         //precondizione: il gestore non deve essere nullo
         if (gestore == null) throw new IllegalArgumentException(Costanti.GESTORE_NON_NULLO);
-        /*in questo caso l'interfaccia prenotabile fa da contratto tra la view ed il controller, infatti la view accede
+        /*in questo caso l'interfaccia prenotabile fa da contratto tra la view e il controller, infatti la view accede
          solamente al nome del piatto/menu, non conosce nient'altro */
         view.stampaInizializzazione(gestore.inizializzaRistorante());
     }
@@ -57,7 +56,7 @@ public class Controller {
         MyMenu menu_tempo = MyMenu.creaMenuStruttura(Costanti.TEMPO);
         MyMenu menu_inizializza = MyMenu.creaMenuStruttura(Costanti.INIZIALIZZAZIONE);
 
-        if (InputDatiTestuale.yesOrNo("Vuoi modificare ulteriormente i dati di inizializzazione?")){
+        if (view.yesOrNo("Vuoi modificare ulteriormente i dati di inizializzazione?")){
             view.ripulisciConsole();
             modificaDatiIniziali(gestore.getRistorante(), menu_inizializza);
         }
@@ -86,11 +85,11 @@ public class Controller {
                     break;
 
                 case 3:
-                    int scelta_funz_tempo = menu_tempo.scegliConUscita();
+                    int scelta_funz_tempo = menu_tempo.scegliConUscita(view);
                     view.ripulisciConsole();
                     while (scelta_funz_tempo != 0) {
                         scegliFunzionalitaTemporali(scelta_funz_tempo, data_attuale, gestore);
-                        InputDatiTestuale.premerePerContinuare();
+                        view.premerePerContinuare();
                         view.ripulisciConsole();
                         scelta_funz_tempo = menu_tempo.scegliConUscita(view);
                         view.ripulisciConsole();
@@ -98,7 +97,7 @@ public class Controller {
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.TEMPO.toUpperCase(Locale.ROOT));
                     break;
             }
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
             view.ripulisciConsole();
             scelta_attore = menu_attori.scegliConUscita(view);
             view.ripulisciConsole();
@@ -174,7 +173,7 @@ public class Controller {
             case 2:
                 boolean data_errata;
                 do{
-                    String stringa_data_prenotazione = InputDatiTestuale.leggiStringa(Costanti.INS_DATA);
+                    String stringa_data_prenotazione = view.leggiStringa(Costanti.INS_DATA);
                     LocalDate data_prenotazione = Tempo.parsaData(stringa_data_prenotazione);
 
                     if(data_prenotazione == null){
@@ -213,7 +212,7 @@ public class Controller {
         view.stampaTesto("Inserimento dati NUOVA PRENOTAZIONE");
 
         //NOME
-        String nome_cliente = InputDatiTestuale.leggiStringaNonVuota("Nome cliente: ");
+        String nome_cliente = view.leggiStringaNonVuota("Nome cliente: ");
         Cliente cliente = new Cliente(nome_cliente);
 
         //DATA
@@ -235,7 +234,7 @@ public class Controller {
             return;
         }
 
-        int n_coperti = InputDatiTestuale.leggiInteroConMinimoMassimo("Numero persone: ", 1, Math.min(posti_liberi_effettivi, posti_liberi_stimati * 2));
+        int n_coperti = view.leggiInteroConMinimoMassimo("Numero persone: ", 1, Math.min(posti_liberi_effettivi, posti_liberi_stimati * 2));
 
         inserisciSceltePrenotazione(ristorante, data_prenotazione, cliente, n_coperti);
 
@@ -272,23 +271,23 @@ public class Controller {
             if (n_portate < n_coperti)
                 view.stampaTesto("Deve scelgliere almeno altre %s portate per convalidare la prenotazione.", String.valueOf(n_coperti - n_portate));
 
-            boolean validità = false;
+            boolean validita = false;
             Prenotabile portata = null;
 
             do {
-                String scelta = InputDatiTestuale.leggiStringa("Inserisca il nome della portata da ordinare: ");
+                String scelta = view.leggiStringa("Inserisca il nome della portata da ordinare: ");
                 //controllo che la portata scelta sia presente nel menu del giorno
                 for (Prenotabile prenotabile : menu_del_giorno) {
                     if (prenotabile.getNome().equalsIgnoreCase(scelta)) {
                         portata = prenotabile;
-                        validità = true;
+                        validita = true;
                     }
                 }
-                if (!validità)
-                    InputDatiTestuale.leggiStringa("Portata non presente nel menu del giorno.");
-            } while (!validità);
+                if (!validita)
+                    view.leggiStringa("Portata non presente nel menu del giorno.");
+            } while (!validita);
 
-            int quantità = InputDatiTestuale.leggiInteroConMinimo("Inserisca le porzioni desiderate di " + portata.getNome().toLowerCase(Locale.ROOT) + ": ", 0);
+            int quantità = view.leggiInteroConMinimo("Inserisca le porzioni desiderate di " + portata.getNome().toLowerCase(Locale.ROOT) + ": ", 0);
 
             //devo leggere il value precedente e sommarlo alla nuova quantità aggiunta, dopodichè rimetto la value nuova nella Map
             Integer quantita_precedente = scelte.get(portata);
@@ -314,14 +313,14 @@ public class Controller {
 
             } else if (quantità == 0) view.stampaTesto("Portata non aggiunta all'ordine.");
 
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
             view.ripulisciConsole();
 
             n_portate = 0;
             for (Integer value : scelte.values())
                 n_portate += value;
 
-        } while (n_portate < n_coperti || InputDatiTestuale.yesOrNo("Ogni commensale ha ordinato almeno una portata ciascuno, vuole ordinare altre portate?"));
+        } while (n_portate < n_coperti || view.yesOrNo("Ogni commensale ha ordinato almeno una portata ciascuno, vuole ordinare altre portate?"));
 
         //Costruzione Prenotazione
         Prenotazione prenotazione = new Prenotazione(cliente, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
@@ -342,7 +341,7 @@ public class Controller {
 
         LocalDate data_prenotazione = null;
         do {
-            String stringa_data_prenotazione = InputDatiTestuale.leggiStringa(Costanti.INS_DATA);
+            String stringa_data_prenotazione = view.leggiStringa(Costanti.INS_DATA);
             data_prenotazione = Tempo.parsaData(stringa_data_prenotazione);
         }while(!controllaData(data_prenotazione, data_attuale, ristorante));
         return data_prenotazione;
@@ -390,7 +389,7 @@ public class Controller {
             switch (scelta_inizializza) {
 
                 case 1: //modifica n_posti ristorante
-                    int n_posti = InputDatiTestuale.leggiInteroConMinimo("\nInserisci il nuovo numero di posti del ristorante: ", 1);
+                    int n_posti = view.leggiInteroConMinimo("\nInserisci il nuovo numero di posti del ristorante: ", 1);
                     //comuninco che il numero di posti è uguale a quello attuale
                     if(n_posti == ristorante.getN_posti())
                         view.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");

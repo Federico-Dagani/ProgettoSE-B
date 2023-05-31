@@ -8,11 +8,20 @@ import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Utility.Costanti;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class InterfacciaTestuale implements View {
+
+    private static Scanner lettore = creaScanner();
+
+
     /**
      * <h2>Metodo che stampa a video il menu del giorno</h2>
      * <b>Precondizione: </b>ristorante e data non nulli<br>
@@ -88,7 +97,7 @@ public class InterfacciaTestuale implements View {
      * @return nome del gestore
      */
     public String inserisciNomeGestore() {
-        return InputDatiTestuale.leggiStringaConSpazio("Benvenuto, inserisca il nome del gestore del ristorante: ");
+        return leggiStringaConSpazio("Benvenuto, inserisca il nome del gestore del ristorante: ");
     }
 
     /**
@@ -303,4 +312,185 @@ public class InterfacciaTestuale implements View {
         for (int i = 0; i < 30; i++)
             System.out.println();
     }
+
+    private static Scanner creaScanner() {
+        return new Scanner(System.in).useDelimiter("\n");
+    }
+
+    public String leggiStringa(String messaggio) {
+        System.out.print("\n"+messaggio);
+        return lettore.next();
+    }
+
+    public String leggiStringaConSpazio(String messaggio){
+        System.out.printf("\n"+messaggio);
+        return lettore.next();
+    }
+
+    public String leggiStringaNonVuota(String messaggio) {
+        boolean finito = false;
+        String lettura = null;
+        do {
+            lettura = leggiStringa(messaggio);
+            lettura = lettura.trim();
+            if (lettura.length() > 0)
+                finito = true;
+            else
+                System.out.println("\n"+ Costanti.ERRORE_STRINGA_VUOTA);
+        } while (!finito);
+
+        return lettura;
+    }
+
+    public char leggiChar(String messaggio) {
+        boolean finito = false;
+        char valoreLetto = '\0';
+        do {
+            System.out.print(messaggio);
+            String lettura = lettore.next();
+            if (lettura.length() > 0) {
+                valoreLetto = lettura.charAt(0);
+                finito = true;
+            } else {
+                System.out.println("\n"+ Costanti.ERRORE_STRINGA_VUOTA);
+            }
+        } while (!finito);
+        return valoreLetto;
+    }
+
+    public char leggiUpperChar(String messaggio, String ammissibili) {
+        boolean finito = false;
+        char valoreLetto = '\0';
+        do {
+            valoreLetto = leggiChar(messaggio);
+            valoreLetto = Character.toUpperCase(valoreLetto);
+            if (ammissibili.indexOf(valoreLetto) != -1)
+                finito = true;
+            else
+                System.out.println(Costanti.MESSAGGIO_AMMISSIBILI + ammissibili);
+        } while (!finito);
+        return valoreLetto;
+    }
+
+
+    public int leggiIntero(String messaggio) {
+        boolean finito = false;
+        int valoreLetto = 0;
+        do {
+            System.out.print("\n"+messaggio);
+            try {
+                valoreLetto = lettore.nextInt();
+                finito = true;
+            } catch (InputMismatchException e) {
+                System.out.println("\n"+ Costanti.ERRORE_FORMATO);
+                String daButtare = lettore.next();
+            }
+        } while (!finito);
+        return valoreLetto;
+    }
+
+    public int leggiInteroPositivo(String messaggio) {
+        return leggiInteroConMinimo(messaggio, 1);
+    }
+
+    public int leggiInteroNonNegativo(String messaggio) {
+        return leggiInteroConMinimo(messaggio, 0);
+    }
+
+    public int leggiInteroConMinimoMassimo(String messaggio, int min, int max) {
+        boolean finito = false;
+        int valoreLetto = 0;
+        do{
+            valoreLetto = leggiIntero(messaggio);
+            if(valoreLetto >= min && valoreLetto <= max)
+                finito = true;
+            else
+                System.out.printf(Costanti.ERRORE_MINIMO_MASSIMO + "\n", min, max);
+        }while(!finito);
+
+        return valoreLetto;
+    }
+
+    public int leggiInteroConMinimo(String messaggio, int minimo) {
+        boolean finito = false;
+        int valoreLetto = 0;
+        do {
+            valoreLetto = leggiIntero(messaggio);
+            if (valoreLetto >= minimo)
+                finito = true;
+            else
+                System.out.println("\n"+ Costanti.ERRORE_MINIMO + minimo);
+        } while (!finito);
+
+        return valoreLetto;
+    }
+
+    public int leggiIntero(String messaggio, int minimo, int massimo) {
+        boolean finito = false;
+        int valoreLetto = 0;
+        do {
+            valoreLetto = leggiIntero(messaggio);
+            if (valoreLetto >= minimo && valoreLetto <= massimo)
+                finito = true;
+            else if (valoreLetto < minimo)
+                System.out.println("\n" + Costanti.ERRORE_MINIMO + minimo);
+            else
+                System.out.println("\n" + Costanti.ERRORE_MASSIMO + massimo);
+        } while (!finito);
+
+        return valoreLetto;
+    }
+
+
+    public double leggiDouble(String messaggio) {
+        boolean finito = false;
+        double valoreLetto = 0;
+        do {
+            System.out.print("\n"+messaggio);
+            try {
+                valoreLetto = lettore.nextDouble();
+                finito = true;
+            } catch (InputMismatchException e) {
+                System.out.println(Costanti.ERRORE_FORMATO);
+                String daButtare = lettore.next();
+            }
+        } while (!finito);
+        return valoreLetto;
+    }
+
+    public double leggiDoubleConMinimo(String messaggio, double minimo) {
+        boolean finito = false;
+        double valoreLetto = 0;
+        do {
+            valoreLetto = leggiDouble(messaggio);
+            if (valoreLetto >= minimo)
+                finito = true;
+            else
+                System.out.println(Costanti.ERRORE_MINIMO + minimo);
+        } while (!finito);
+
+        return valoreLetto;
+    }
+
+
+    public boolean yesOrNo(String messaggio) {
+        String mioMessaggio = messaggio + "(" + Costanti.RISPOSTA_SI + "/" + Costanti.RISPOSTA_NO + ") ";
+        char valoreLetto = leggiUpperChar(mioMessaggio, String.valueOf(Costanti.RISPOSTA_SI) + String.valueOf(Costanti.RISPOSTA_NO));
+
+        if (valoreLetto == Costanti.RISPOSTA_SI)
+            return true;
+        else
+            return false;
+    }
+
+    public void premerePerContinuare(){
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try{
+            System.out.println("\n\nPremere un tasto per continuare ... ");
+            br.readLine();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

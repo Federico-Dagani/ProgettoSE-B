@@ -41,4 +41,35 @@ public interface View {
     void stampaListaSpesa(ArrayList<Alimento> lista_spesa);
 
     void ripulisciConsole();
-}
+
+    String leggiStringa(String messaggio);
+
+    String leggiStringaConSpazio(String messaggio);
+
+    String leggiStringaNonVuota(String messaggio);
+
+    char leggiChar(String messaggio);
+
+    char leggiUpperChar(String messaggio, String ammissibili);
+
+    int leggiIntero(String messaggio);
+
+    int leggiInteroPositivo(String messaggio);
+
+    int leggiInteroNonNegativo(String messaggio);
+
+    int leggiInteroConMinimoMassimo(String messaggio, int min, int max);
+
+    int leggiInteroConMinimo(String messaggio, int minimo);
+
+    int leggiIntero(String messaggio, int minimo, int massimo);
+
+    double leggiDouble(String messaggio);
+
+    double leggiDoubleConMinimo(String messaggio, double minimo);
+
+    boolean yesOrNo(String messaggio);
+
+    void premerePerContinuare();
+
+    }

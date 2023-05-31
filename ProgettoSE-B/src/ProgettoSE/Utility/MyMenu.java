@@ -1,6 +1,6 @@
 package ProgettoSE.Utility;
 
-import ProgettoSE.View.InputDatiTestuale;
+import ProgettoSE.View.View;
 
 import java.util.Locale;
 
@@ -31,14 +31,9 @@ public class MyMenu {
         this.lunghezza_cornice_orizz = this.titolo.length();
     }
 
-    public int scegliConUscita() {
+    public int scegliConUscita(View view) {
         stampaMenuConUscita();
-        return InputDatiTestuale.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
-    }
-
-    public int scegliSenzaUscita() {
-        stampaMenuSenzaUscita();
-        return InputDatiTestuale.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
+        return view.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
     }
 
     public void stampaMenuConUscita() {
