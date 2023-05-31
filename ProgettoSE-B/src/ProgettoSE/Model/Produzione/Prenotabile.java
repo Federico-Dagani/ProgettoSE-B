@@ -14,4 +14,6 @@ public interface Prenotabile {
      * @return date di disponibilità del prenotabile
      */
     ArrayList<LocalDate> getDisponibilità();
+
+    ArrayList<String> mostraPrenotabile();
 }

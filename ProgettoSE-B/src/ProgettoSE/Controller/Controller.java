@@ -263,8 +263,8 @@ public class Controller {
         }
 
         do {
-            view.stampaMenuDelGiorno(ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione), data_prenotazione);
 
+            view.stampaMenuDelGiorno(ristorante.getAddettoPrenotazione().calcolaMenuDelGiorno(data_prenotazione), data_prenotazione);
             //mostro un riepilogo delle scelyìte già effettuate
             view.stampaScelte(scelte);
 

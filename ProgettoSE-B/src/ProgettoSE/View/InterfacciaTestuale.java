@@ -42,38 +42,12 @@ public class InterfacciaTestuale implements View {
             System.out.println("(può scegliere sia i piatti all'interno del menù alla carta che i menù tematici presenti) \n");
             //ciclo l'arraylist di prenotabili e stampo a video i piatti e i menù tematici
             for (Prenotabile prenotabile : menu_del_giorno) {
-                //stampo i piatti
-                if (prenotabile instanceof Piatto) {
-                    Piatto piatto = (Piatto) prenotabile;
-                    System.out.printf("- " + piatto.getNome().toUpperCase());
-                    // System.out.printf(" con ingredienti: (");
-                    System.out.printf(": (");
-                    ArrayList<Alimento> ingredienti = piatto.getRicetta().getIngredienti();
-                    for (Alimento ingrediente : ingredienti) {
-                        //gestisco l'ultimo elemento mettendo un punto al posto della virgola
-                        if (ingrediente.equals(piatto.getRicetta().getIngredienti().get(ingredienti.toArray().length - 1)))
-                            System.out.printf(ingrediente.getNome() + ".)");
-                        else
-                            System.out.printf(ingrediente.getNome() + ", ");
-                    }
-                    System.out.printf("\n\n");
-                //stampo i menù tematici
-                } else if (prenotabile instanceof MenuTematico) {
-                    MenuTematico menu_tematico = (MenuTematico) prenotabile;
-                    System.out.printf("- Menù " + menu_tematico.getNome().toUpperCase());
-                    System.out.printf(" con i seguenti piatti: ");
-                    //stampo i piatti nel menu tematico
-                    ArrayList<Piatto> piatti = menu_tematico.getPiatti_menu();
-                    for (Piatto piatto : menu_tematico.getPiatti_menu()) {
-                        //gestisco l'ultimo elemento mettendo un punto al posto della virgola
-                        if (piatto.equals(piatti.get(piatti.toArray().length - 1)))
-                            System.out.printf("" + piatto.getNome() + ".");
-                        else
-                            System.out.printf("" + piatto.getNome() + ", ");
-                    }
-                    System.out.printf("\n\n");
-
+                ArrayList<String> elementi = prenotabile.mostraPrenotabile();
+                System.out.printf("- " + elementi.get(0).toUpperCase() + ": (  ");
+                for (int i =1; i< elementi.size()-1; i++){
+                    System.out.printf(elementi.get(i) + "  ");
                 }
+                System.out.printf(")\n\n");
             }
             //ritorno false perchè il menu non è vuoto
             return false;
@@ -134,13 +108,7 @@ public class InterfacciaTestuale implements View {
         System.out.println("Le scelte effettuate finora sono le seguenti: ");
         //scorro le key dell'hashmap e stampo a video i piatti e i menù tematici con la relativa value che rappresenta la quantità scelta
         for (Prenotabile prenotabile : scelte.keySet()) {
-            if (prenotabile instanceof Piatto) {
-                System.out.printf("- " + prenotabile.getNome() + ", ");
-                System.out.printf("quantità: " + scelte.get(prenotabile) + "\n");
-            } else if (prenotabile instanceof MenuTematico) {
-                System.out.printf("- Menù " + prenotabile.getNome() + ", ");
-                System.out.printf("quantità: " + scelte.get(prenotabile) + "\n");
-            }
+                System.out.println("- " + prenotabile.getNome().toUpperCase() + ", " + "quantità: " + scelte.get(prenotabile) + "\n\n");
         }
     }
 
@@ -160,11 +128,7 @@ public class InterfacciaTestuale implements View {
         //stampo a video gli alimenti con i relativi consumi procapite sfruttando il polimorfismo
         for (Alimento alimento : alimenti) {
             System.out.printf("\n- " + alimento.getNome() + ", ");
-            if (alimento instanceof Bevanda) {
-                System.out.printf("consumo procapite: " + ((Bevanda) alimento).getCons_procapite() + "\n");
-            } else if (alimento instanceof Extra) {
-                System.out.printf("consumo procapite: " + ((Extra) alimento).getCons_procapite() + "\n");
-            }
+            System.out.printf("consumo procapite: " + alimento.getCons_procapite() + "\n");
         }
     }
 

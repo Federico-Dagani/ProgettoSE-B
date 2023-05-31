@@ -17,6 +17,7 @@ public class Extra extends Alimento {
     }
 
     //getter
+    @Override
     public float getCons_procapite() {
         return cons_procapite;
     }

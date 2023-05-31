@@ -44,4 +44,6 @@ abstract public class Alimento {
         this.misura = misura;
     }
 
+    //getter
+    public abstract float getCons_procapite();
 }

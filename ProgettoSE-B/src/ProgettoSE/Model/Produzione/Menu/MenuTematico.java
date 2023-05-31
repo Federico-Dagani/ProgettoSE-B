@@ -61,4 +61,13 @@ public class MenuTematico extends Menu implements Prenotabile {
         this.disponibilità.add(periodo.get(0));
         this.disponibilità.add(periodo.get(1));
     }
+
+    public ArrayList<String> mostraPrenotabile(){
+        ArrayList<String> lista = new ArrayList<>();
+        lista.add(this.nome);
+        for(Piatto p : this.getPiatti_menu()){
+            lista.add(p.getNome());
+        }
+        return lista;
+    }
 }

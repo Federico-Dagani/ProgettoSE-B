@@ -18,6 +18,8 @@ public class Bevanda extends Alimento {
     }
 
     //getters
+
+    @Override
     public float getCons_procapite() {
         return cons_procapite;
     }
