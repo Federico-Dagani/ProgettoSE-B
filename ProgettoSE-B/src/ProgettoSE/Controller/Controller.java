@@ -63,19 +63,19 @@ public class Controller {
         }
         view.ripulisciConsole();
 
-        int scelta_attore = menu_attori.scegliConUscita();
+        int scelta_attore = menu_attori.scegliConUscita(view);
         view.ripulisciConsole();
         while (scelta_attore != 0) {
             switch (scelta_attore) {
 
                 case 1:
-                    int scelta_funz_gestore = menu_gestore.scegliConUscita();
+                    int scelta_funz_gestore = menu_gestore.scegliConUscita(view);
                     view.ripulisciConsole();
                     while (scelta_funz_gestore != 0) {
                         scegliFunzionalitaGestore(scelta_funz_gestore, gestore.getRistorante());
-                        InputDatiTestuale.premerePerContinuare();
+                        view.premerePerContinuare();
                         view.ripulisciConsole();
-                        scelta_funz_gestore = menu_gestore.scegliConUscita();
+                        scelta_funz_gestore = menu_gestore.scegliConUscita(view);
                         view.ripulisciConsole();
                     }
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.GESTORE.toUpperCase(Locale.ROOT));
@@ -92,7 +92,7 @@ public class Controller {
                         scegliFunzionalitaTemporali(scelta_funz_tempo, data_attuale, gestore);
                         InputDatiTestuale.premerePerContinuare();
                         view.ripulisciConsole();
-                        scelta_funz_tempo = menu_tempo.scegliConUscita();
+                        scelta_funz_tempo = menu_tempo.scegliConUscita(view);
                         view.ripulisciConsole();
                     }
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.TEMPO.toUpperCase(Locale.ROOT));
@@ -100,7 +100,7 @@ public class Controller {
             }
             InputDatiTestuale.premerePerContinuare();
             view.ripulisciConsole();
-            scelta_attore = menu_attori.scegliConUscita();
+            scelta_attore = menu_attori.scegliConUscita(view);
             view.ripulisciConsole();
         }
 
@@ -377,7 +377,7 @@ public class Controller {
         //precondizione
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
-        int scelta_inizializza = menu_inizializza.scegliConUscita();
+        int scelta_inizializza = menu_inizializza.scegliConUscita(view);
 
         view.ripulisciConsole();
 
@@ -396,11 +396,11 @@ public class Controller {
                         view.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");
                     else
                         ristorante.setN_posti(n_posti);
-                    InputDatiTestuale.premerePerContinuare();
+                    view.premerePerContinuare();
                     break;
 
                 case 2: //modifica lavoro_persona
-                    int lavoro_persona = InputDatiTestuale.leggiInteroConMinimo("\n" + Costanti.INS_LAVORO_PERSONA, 1);
+                    int lavoro_persona = view.leggiInteroConMinimo("\n" + Costanti.INS_LAVORO_PERSONA, 1);
                     //comuninco che il numero di lavoro per persona è uguale a quello attuale
                     if(lavoro_persona == ristorante.getLavoro_persona())
                         view.stampaTesto(Costanti.UGUALE_ATTUALE,"lavoro per persona");
@@ -413,7 +413,7 @@ public class Controller {
 
                     //se il messaggio è vuoto vuol dire che non ci sono errori sia nei menu che nelle ricette
                     view.stampaElementiInvalidi(prenotabili_invalidi);
-                    InputDatiTestuale.premerePerContinuare();
+                    view.premerePerContinuare();
                     break;
 
                 case 3://aggiungi ingrediente in magazzino
@@ -444,7 +444,7 @@ public class Controller {
                     break;
             }
             view.ripulisciConsole();
-            scelta_inizializza = menu_inizializza.scegliConUscita();
+            scelta_inizializza = menu_inizializza.scegliConUscita(view);
             view.ripulisciConsole();
         }
     }
@@ -455,17 +455,17 @@ public class Controller {
         String tipo = nuovo_alimento.getClass().getSimpleName();
         if(result) view.stampaTesto("%s aggiunt* al magazzino", tipo);
         else view.stampaTesto("%s già presente in magazzino", tipo);
-        InputDatiTestuale.premerePerContinuare();
+        view.premerePerContinuare();
     }
 
     public void aggiungiPrenotabile(ArrayList<Prenotabile> invalidi, String mex) {
         view.ripulisciConsole();
         if (invalidi.isEmpty()){
             view.stampaTesto(mex);
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
         } else{
             view.stampaElementiInvalidi(invalidi);
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
         }
     }
 
@@ -481,18 +481,18 @@ public class Controller {
         if (tipo == null) throw new IllegalArgumentException("Tipo alimento non valido");
 
         view.stampaTesto("Inserisci i dati dell'alimento di tipo: %s", tipo);
-        String nome = InputDatiTestuale.leggiStringaConSpazio(Costanti.INS_NOME);
-        float quantita = (float) InputDatiTestuale.leggiDoubleConMinimo(Costanti.INS_QTA, 0);
-        String unita_misura = InputDatiTestuale.leggiStringaNonVuota(Costanti.INS_MISURA);
+        String nome = view.leggiStringaConSpazio(Costanti.INS_NOME);
+        float quantita = (float) view.leggiDoubleConMinimo(Costanti.INS_QTA, 0);
+        String unita_misura = view.leggiStringaNonVuota(Costanti.INS_MISURA);
         //dentro lo switch andrò a settare il consumo procapite solo se il tipo è Extra o Bevanda
         switch (tipo) {
             case Costanti.INGREDIENTE:
                 return new Ingrediente(nome, quantita, unita_misura);
             case Costanti.EXTRA:
-                float consumo_procapite = (float) InputDatiTestuale.leggiDoubleConMinimo(Costanti.INS_CONS_PROCAPITE, 0);
+                float consumo_procapite = (float) view.leggiDoubleConMinimo(Costanti.INS_CONS_PROCAPITE, 0);
                 return new Extra(nome, quantita, unita_misura, consumo_procapite);
             case Costanti.BEVANDA:
-                consumo_procapite = (float) InputDatiTestuale.leggiDoubleConMinimo(Costanti.INS_CONS_PROCAPITE, 0);
+                consumo_procapite = (float) view.leggiDoubleConMinimo(Costanti.INS_CONS_PROCAPITE, 0);
                 return new Bevanda(nome, quantita, unita_misura, consumo_procapite);
             default:
                 return null;
@@ -511,15 +511,15 @@ public class Controller {
         if (tipologia == null) throw new IllegalArgumentException("Tipologia non valida");
 
         System.out.printf("\nInserisci i dati del %s \n\n", tipologia);
-        String nome = InputDatiTestuale.leggiStringaConSpazio(Costanti.INS_NOME);
-        float lavoro = (float) InputDatiTestuale.leggiDoubleConMinimo(Costanti.INS_LAVORO, 0);
+        String nome = view.leggiStringaConSpazio(Costanti.INS_NOME);
+        float lavoro = (float) view.leggiDoubleConMinimo(Costanti.INS_LAVORO, 0);
         ArrayList<LocalDate> disponibilita = new ArrayList<>();
 
         do {
             boolean data_errata; //variabile per permettere di reinserire immediamente delle nuvo disponibilità in caso quelle inserite siano scorrette
             do {
-                String data_inizio_da_parsare = InputDatiTestuale.leggiStringaNonVuota(Costanti.INS_DATA_INIZIO);
-                String data_fine_da_parsare = InputDatiTestuale.leggiStringaNonVuota(Costanti.INS_DATA_FINE);
+                String data_inizio_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_INIZIO);
+                String data_fine_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_FINE);
 
                 LocalDate data_inizio_parsata = Tempo.parsaData(data_inizio_da_parsare);
                 LocalDate data_fine_parsata = Tempo.parsaData(data_fine_da_parsare);
@@ -534,7 +534,7 @@ public class Controller {
                 };
 
             } while (data_errata);
-        } while (InputDatiTestuale.yesOrNo("\nVuoi aggiungere un'altra disponibilità?"));
+        } while (view.yesOrNo("\nVuoi aggiungere un'altra disponibilità?"));
         //in base alla tipologia creo oggetti diversi
         if (tipologia.equals(Costanti.MENU_TEMATICO)) {
             return new MenuTematico(nome, new ArrayList<>(), lavoro, disponibilita);
@@ -563,7 +563,7 @@ public class Controller {
             //prima mostro i piatti presenti nel ristorante
             view.mostraPiatti(menu_ristorante);
 
-            String nome_piatto = InputDatiTestuale.leggiStringaConSpazio(Costanti.INS_NOME);
+            String nome_piatto = view.leggiStringaConSpazio(Costanti.INS_NOME);
             //flag per salvarmi se il piatto è stato trovato o meno
             boolean trovato = false;
             for (Prenotabile piatto : menu_ristorante) {
@@ -579,9 +579,9 @@ public class Controller {
             if (!trovato) view.stampaTesto("Piatto non trovato o già inserito nel menu");
             else view.stampaTesto("Piatto aggiunto al menu");
 
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
             //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro piatto se il piatto non è stato trovato
-        } while (piatti.size() < Costanti.MINIMO_PIATTI_PER_MENU || InputDatiTestuale.yesOrNo("Vuoi aggiungere un altro piatto al menu?"));
+        } while (piatti.size() < Costanti.MINIMO_PIATTI_PER_MENU || view.yesOrNo("Vuoi aggiungere un altro piatto al menu?"));
         menu_tematico.setPiatti_menu(piatti);
         menu_ristorante.add(menu_tematico);
         //postcondizione: il menu tematico è creato e aggiunto al menu del ristorante
@@ -601,7 +601,7 @@ public class Controller {
 
         Piatto piatto = (Piatto) creaPrenotabile(Costanti.PIATTO);
 
-        int n_porzioni = InputDatiTestuale.leggiInteroConMinimo("\nInserisci il numero di porzioni delle ricetta per cucinare il piatto: ", 1);
+        int n_porzioni = view.leggiInteroConMinimo("\nInserisci il numero di porzioni delle ricetta per cucinare il piatto: ", 1);
         float lavoro_porzione = piatto.getLavoro_piatto();
 
         //aggiunta degli ingredienti alla ricetta
@@ -609,7 +609,7 @@ public class Controller {
         do {
             view.mostraAlimenti(ristorante.getMagazziniere().getMagazzino().getIngredienti());
 
-            String nome_ingrediente = InputDatiTestuale.leggiStringaConSpazio("\nInserisci il nome dell'ingrediente: ");
+            String nome_ingrediente = view.leggiStringaConSpazio("\nInserisci il nome dell'ingrediente: ");
             Ingrediente nuovo_ingrediente = new Ingrediente();
             boolean trovato = false;
             for (Alimento ingrediente : ristorante.getMagazziniere().getMagazzino().getIngredienti()) {
@@ -618,7 +618,7 @@ public class Controller {
                 //controllo che l'ingrediente sia un ingrediente, che il nome sia uguale a quello inserito e che non sia già stato inserito nell'ArrayList ingredienti_nuovo_piatto (ovvero quegli ingredienti che saranno inseriti nella ricetta, solo sucessivamente)
                 if (ingrediente instanceof Ingrediente && ingrediente.getNome().equalsIgnoreCase(nome_ingrediente) && !gia_presente) {
                     nuovo_ingrediente.setNome(ingrediente.getNome());
-                    nuovo_ingrediente.setQta((float) InputDatiTestuale.leggiDoubleConMinimo("Inserisci la quantità di " + nome_ingrediente + " in " + ingrediente.getMisura() + ": ", 0));
+                    nuovo_ingrediente.setQta((float) view.leggiDoubleConMinimo("Inserisci la quantità di " + nome_ingrediente + " in " + ingrediente.getMisura() + ": ", 0));
                     nuovo_ingrediente.setMisura(ingrediente.getMisura());
                     //controllo che la nuova qta sia diversa da 0, in tal caso aggiungo l'ingrediente alla ricetta
                     if(nuovo_ingrediente.getQta() != 0.0) ingredienti_nuovo_piatto.add(nuovo_ingrediente);
@@ -633,9 +633,9 @@ public class Controller {
             else if(nuovo_ingrediente.getQta() == 0.0) view.stampaTesto("Quantità non valida");
             else view.stampaTesto("Ingrediente aggiunto alla ricetta");
 
-            InputDatiTestuale.premerePerContinuare();
+            view.premerePerContinuare();
             //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro ingrediente se l'ingrediente non è stato trovato
-        } while (ingredienti_nuovo_piatto.size() < Costanti.MINIMO_INGRED_PER_RICETTA || InputDatiTestuale.yesOrNo("\nVuoi aggiungere un altro ingrediente alla ricetta?"));
+        } while (ingredienti_nuovo_piatto.size() < Costanti.MINIMO_INGRED_PER_RICETTA || view.yesOrNo("\nVuoi aggiungere un altro ingrediente alla ricetta?"));
 
         Ricetta ricetta = new Ricetta(ingredienti_nuovo_piatto, n_porzioni, lavoro_porzione);
         piatto.setRicetta(ricetta);

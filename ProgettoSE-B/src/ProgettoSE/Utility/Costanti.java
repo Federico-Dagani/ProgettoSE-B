@@ -78,4 +78,15 @@ public class Costanti {
     public static final String CORNICE_SUP = "┌———————————————————————————————————————————————————————┐";
     public static final String BENVENUTO = "Progetto di Ingegneria del Software A.A. 2022-2023";
     public static final  String CORNICE_INF = "└———————————————————————————————————————————————————————┘";
+
+    //costanti della classe InputDati
+    public final static String ERRORE_FORMATO = "Attenzione: il dato inserito non e' nel formato corretto";
+    public final static String ERRORE_MINIMO = "Attenzione: e' richiesto un valore maggiore o uguale a ";
+    public final static String ERRORE_STRINGA_VUOTA = "Attenzione: non hai inserito alcun carattere";
+    public final static String ERRORE_MASSIMO = "Attenzione: e' richiesto un valore minore o uguale a ";
+    public final static String ERRORE_MINIMO_MASSIMO = "Attenzione: è richiesto un valore compreso tra %d e %d";
+    public final static String MESSAGGIO_AMMISSIBILI = "Attenzione: i caratteri ammissibili sono: ";
+
+    public final static char RISPOSTA_SI = 'S';
+    public final static char RISPOSTA_NO = 'N';
 }
