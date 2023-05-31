@@ -1,5 +1,8 @@
 package ProgettoSE.Model.Produzione;
 
+import ProgettoSE.Model.Alimentari.Alimento;
+import ProgettoSE.Model.Alimentari.Ingrediente;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -97,5 +100,13 @@ public class Piatto implements Prenotabile {
     public void aggiungiDisponibilita(ArrayList<LocalDate> disponibilita){
         for (LocalDate data : disponibilita)
             disponibilità.add(data);
+    }
+
+    public ArrayList<String> mostraPrenotabile(){
+        ArrayList<String> lista = new ArrayList<>();
+        lista.add(this.nome);
+        for (Alimento ingrediente : ricetta.getIngredienti())
+            lista.add(ingrediente.getNome());
+        return lista;
     }
 }
