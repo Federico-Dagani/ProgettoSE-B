@@ -17,4 +17,6 @@ public class Ingrediente extends Alimento {
     public Ingrediente(){
         super("", 0, "");
     }
+
+
 }

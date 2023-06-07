@@ -1,5 +1,6 @@
 package ProgettoSE.Controller;
 
+import ProgettoSE.Controller.Handlers.*;
 import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Alimentari.Bevanda;
 import ProgettoSE.Model.Alimentari.Extra;
@@ -31,8 +32,24 @@ public class Controller {
 
     private final View view;
 
+    private final ArrayList<Option> options;
+
     public Controller(View view) {
         this.view = view;
+        this.options = new ArrayList<>();
+    }
+    private void setOptions(Ristorante ristorante) {
+        options.clear();
+        options.add(new Option("Visualizza il carico di lavoro per persona", new VisualizzaCaricoLavoro()));
+        options.add(new Option("Visualizza il numero di posti a sedere disponibili", new VisualizzaPostiSedere()));
+        options.add(new Option("Visualizza l'insieme delle bevande", new VisualizzaBevande()));
+        options.add(new Option("Visualizza l'insieme dei generi extra", new VisualizzaExtra()));
+        options.add(new Option("Visualizza il consumo pro-capite di bevande", new VisualizzaConsumoBevande()));
+        options.add(new Option("Visualizza il consumo pro-capite di generi extra", new VisualizzaConsumoExtra()));
+        options.add(new Option("Visualizza i menu tematici presenti nel menu", new VisualizzaMenuTematici()));
+        options.add(new Option("Visualizza i piatti presenti nel menu", new VisualizzaPiatti()));
+        options.add(new Option("Visualizza il ricettario", new VisualizzaRicettario()));
+
     }
 
     /**
@@ -68,15 +85,12 @@ public class Controller {
             switch (scelta_attore) {
 
                 case 1:
-                    int scelta_funz_gestore = menu_gestore.scegliConUscita(view);
+
+                    scegliFunzionalitaGestore(gestore.getRistorante());
+                    view.premerePerContinuare();
                     view.ripulisciConsole();
-                    while (scelta_funz_gestore != 0) {
-                        scegliFunzionalitaGestore(scelta_funz_gestore, gestore.getRistorante());
-                        view.premerePerContinuare();
-                        view.ripulisciConsole();
-                        scelta_funz_gestore = menu_gestore.scegliConUscita(view);
-                        view.ripulisciConsole();
-                    }
+                    view.ripulisciConsole();
+
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.GESTORE.toUpperCase(Locale.ROOT));
                     break;
 
@@ -110,7 +124,6 @@ public class Controller {
     /**
      * <h2>Metodo che gestisce le varie funzionalità (di visualizzazione) disponibili al gestore</h2>
      * <b>Precondizione: </b>il ristorante deve essere istanziato
-     * @param scelta scelta del gestore
      * @param ristorante
      * @throws IllegalArgumentException se il gestore è null
      */
@@ -118,39 +131,14 @@ public class Controller {
         //precondizione: ristorante != null
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
-        ArrayList<Alimento> bevande = ristorante.getMagazziniere().getMagazzino().getBevande();
-        ArrayList<Alimento> extras = ristorante.getMagazziniere().getMagazzino().getExtras();
-        ArrayList<Prenotabile> menu = ristorante.getAddettoPrenotazione().getMenu();
-
-        switch (scelta) {
-            case 1:
-                view.mostraCaricoLavoroPersona(ristorante.getLavoro_persona());
-                break;
-            case 2:
-                view.mostraPostiDisponibili(ristorante.getN_posti());
-                break;
-            case 3:
-                view.mostraAlimenti(bevande);
-                break;
-            case 4:
-                view.mostraAlimenti(extras);
-                break;
-            case 5:
-                view.mostraConsumoProcapite(bevande);
-                break;
-            case 6:
-                view.mostraConsumoProcapite(extras);
-                break;
-            case 7:
-                view.mostraMenuTematici(menu);
-                break;
-            case 8:
-                view.mostraPiatti(menu);
-                break;
-            case 9:
-                view.mostraRicette(menu);
-                break;
-        }
+        int scelta;
+        setOptions(ristorante);
+        MyMenu menu_gestore = new MyMenu("     " + Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.GESTORE.toUpperCase(Locale.ROOT) + "     ", this.getVoci());
+        do {
+            scelta = menu_gestore.scegliConUscita(view);
+            Handler handler = options.get(scelta).getAction();
+            handler.esegui(view, ristorante);
+        }while (scelta != 0);
     }
 
 

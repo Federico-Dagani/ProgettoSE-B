@@ -152,9 +152,9 @@ public class MyMenu {
 
             case Costanti.TEMPO:
 
-                String[] azioni_tempo = new String[2];
-                azioni_tempo[0] = "Incrementa di un giorno";
-                azioni_tempo[1] = "Scegli una data";
+                ArrayList<String> azioni_tempo = new ArrayList<>();
+                azioni_tempo.add("Incrementa di un giorno");
+                azioni_tempo.add("Scegli una data");
                 return new MyMenu(Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.TEMPO.toUpperCase(Locale.ROOT), azioni_tempo);
 
             case Costanti.INIZIALIZZAZIONE:
