@@ -2,6 +2,7 @@ package ProgettoSE.Utility;
 
 import ProgettoSE.View.View;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /*
@@ -22,18 +23,23 @@ public class MyMenu {
     final private static String RICHIESTA_INSERIMENTO = "Digita il numero dell'opzione desiderata > ";
 
     private String titolo;
-    private String[] voci;
+    private ArrayList<String> voci;
     private int lunghezza_cornice_orizz;
 
-    public MyMenu(String titolo, String[] voci) {
+    public MyMenu(String titolo, ArrayList<String> voci) {
         this.titolo = titolo;
         this.voci = voci;
         this.lunghezza_cornice_orizz = this.titolo.length();
     }
 
+    public void setVoci(ArrayList<String> voci) {
+        if (this.voci != null) this.voci.clear();
+        this.voci = voci;
+    }
+
     public int scegliConUscita(View view) {
         stampaMenuConUscita();
-        return view.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.length);
+        return view.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.size());
     }
 
     public void stampaMenuConUscita() {
@@ -49,8 +55,8 @@ public class MyMenu {
         System.out.println(generaRigaCentrale());
         System.out.println(cornice_inf);
         System.out.println(cornice_sup);
-        for (int i = 0; i < voci.length; i++) {
-            System.out.println(generaVoce((i + 1) + " " + FRECCETTA + " " + voci[i]));
+        for (int i = 0; i < voci.size(); i++) {
+            System.out.println(generaVoce((i + 1) + " " + FRECCETTA + " " + voci.get(i)));
         }
         System.out.println(generaVoce((0) + " " + FRECCETTA + " " + "esci"));
         System.out.println(cornice_inf);
@@ -69,8 +75,8 @@ public class MyMenu {
         System.out.println(generaRigaCentrale());
         System.out.println(cornice_inf);
         System.out.println(cornice_sup);
-        for (int i = 0; i < voci.length; i++) {
-            System.out.println(generaVoce(FRECCETTA + " " + voci[i]));
+        for (int i = 0; i < voci.size(); i++) {
+            System.out.println(generaVoce(FRECCETTA + " " + voci.get(i)));
         }
         System.out.println(cornice_inf);
         System.out.println();
@@ -138,25 +144,11 @@ public class MyMenu {
 
             case Costanti.ATTORI:
 
-                String[] utenti = new String[3];
-                utenti[0] = Costanti.GESTORE;
-                utenti[1] = Costanti.UTENTE;
-                utenti[2] = Costanti.TEMPO;
+                ArrayList<String> utenti = new ArrayList<>();
+                utenti.add(Costanti.GESTORE);
+                utenti.add(Costanti.UTENTE);
+                utenti.add(Costanti.TEMPO);
                 return new MyMenu(Costanti.ATTORI.toUpperCase(Locale.ROOT), utenti);
-
-            case Costanti.GESTORE:
-
-                String[] azioni_gestore = new String[9];
-                azioni_gestore[0] = "Visualizza il carico di lavoro per persona";
-                azioni_gestore[1] = "Visualizza il numero di posti a sedere disponibili";
-                azioni_gestore[2] = "Visualizza l'insieme delle bevande";
-                azioni_gestore[3] = "Visualizza l'insieme dei generi extra";
-                azioni_gestore[4] = "Visualizza il consumo pro-capite di bevande";
-                azioni_gestore[5] = "Visualizza il consumo pro-capite di generi extra";
-                azioni_gestore[6] = "Visualizza i menu tematici presenti nel menu";
-                azioni_gestore[7] = "Visualizza i piatti presenti nel menu";
-                azioni_gestore[8] = "Visualizza il ricettario";
-                return new MyMenu("     " + Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.GESTORE.toUpperCase(Locale.ROOT) + "     ", azioni_gestore);
 
             case Costanti.TEMPO:
 
@@ -167,14 +159,14 @@ public class MyMenu {
 
             case Costanti.INIZIALIZZAZIONE:
 
-                String[] azioni_inizializzazione = new String[7];
-                azioni_inizializzazione[0] = "Modifica il numero di posti del ristorante";
-                azioni_inizializzazione[1] = "Modifica il lavoro in carico ad ogni persona";
-                azioni_inizializzazione[2] = "Aggiungi un ingrediente";
-                azioni_inizializzazione[3] = "Aggiungi un'extra";
-                azioni_inizializzazione[4] = "Aggiungi una bevanda";
-                azioni_inizializzazione[5] = "Aggiungi un menu";
-                azioni_inizializzazione[6] = "Aggiungi un piatto";
+                ArrayList<String> azioni_inizializzazione = new ArrayList<>();
+                azioni_inizializzazione.add("Modifica il numero di posti del ristorante");
+                azioni_inizializzazione.add("Modifica il lavoro in carico ad ogni persona");
+                azioni_inizializzazione.add("Aggiungi un ingrediente");
+                azioni_inizializzazione.add("Aggiungi un'extra");
+                azioni_inizializzazione.add("Aggiungi una bevanda");
+                azioni_inizializzazione.add("Aggiungi un menu");
+                azioni_inizializzazione.add("Aggiungi un piatto");
                 return new MyMenu(Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + "di " + Costanti.INIZIALIZZAZIONE.toUpperCase(Locale.ROOT), azioni_inizializzazione);
         }
         return null;

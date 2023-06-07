@@ -52,7 +52,7 @@ public class Controller {
     public void eseguiIterazioni(Gestore gestore, Tempo data_attuale){
         //creazione dei menu a scelta
         MyMenu menu_attori = MyMenu.creaMenuStruttura(Costanti.ATTORI);
-        MyMenu menu_gestore = MyMenu.creaMenuStruttura(Costanti.GESTORE);
+        //MyMenu menu_gestore = MyMenu.creaMenuStruttura(Costanti.GESTORE);
         MyMenu menu_tempo = MyMenu.creaMenuStruttura(Costanti.TEMPO);
         MyMenu menu_inizializza = MyMenu.creaMenuStruttura(Costanti.INIZIALIZZAZIONE);
 
@@ -114,7 +114,7 @@ public class Controller {
      * @param ristorante
      * @throws IllegalArgumentException se il gestore è null
      */
-    private void scegliFunzionalitaGestore(int scelta, Ristorante ristorante) {
+    private void scegliFunzionalitaGestore(Ristorante ristorante) {
         //precondizione: ristorante != null
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
@@ -641,6 +641,14 @@ public class Controller {
         ristorante.getAddettoPrenotazione().getMenu().add(piatto);
         //postcondizione: il piatto è creato e aggiunto al menu del ristorante
         assert ristorante.getAddettoPrenotazione().getMenu().contains(piatto);
+    }
+
+    private ArrayList<String> getVoci() {
+        ArrayList<String> voci = new ArrayList<>();
+        for (Option opt : options) {
+            voci.add(opt.getVoce());
+        }
+        return voci;
     }
 
 }
