@@ -1,5 +1,7 @@
 package ProgettoSE.Controller;
 
+import ProgettoSE.Controller.Factories.MenuTematicoFactory;
+import ProgettoSE.Controller.Factories.PiattoFactory;
 import ProgettoSE.Controller.Handlers.*;
 import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Alimentari.Bevanda;
@@ -85,7 +87,6 @@ public class Controller {
                 case 1:
 
                     scegliFunzionalitaGestore(gestore.getRistorante());
-                    view.premerePerContinuare();
                     view.ripulisciConsole();
                     view.ripulisciConsole();
 
@@ -134,8 +135,10 @@ public class Controller {
         MyMenu menu_gestore = new MyMenu("     " + Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.GESTORE.toUpperCase(Locale.ROOT) + "     ", this.getVoci());
         do {
             scelta = menu_gestore.scegliConUscita(view);
+            if(scelta == 0) break;
             Handler handler = options.get(scelta).getAction();
             handler.esegui(view, ristorante);
+            view.premerePerContinuare();
         }while (scelta != 0);
     }
 
@@ -364,6 +367,9 @@ public class Controller {
 
         int scelta_inizializza = menu_inizializza.scegliConUscita(view);
 
+        MenuTematicoFactory menuTematicoFactory = new MenuTematicoFactory();
+        PiattoFactory piattoFactory = new PiattoFactory();
+
         view.ripulisciConsole();
 
         Magazzino magazzino = ristorante.getMagazziniere().getMagazzino();
@@ -417,13 +423,15 @@ public class Controller {
                     break;
 
                 case 6://aggiungi menu tematico
-                    creaMenuTematico(ristorante);
+                    Prenotabile menu = menuTematicoFactory.creaPrenotabile(ristorante, view);
+                    ristorante.getAddettoPrenotazione().getMenu().add(menu);
                     invalidi = ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Menu tematico creato");
                     break;
 
                 case 7://aggiungi piatto
-                    creaPiatto(ristorante);
+                    Prenotabile piatto = piattoFactory.creaPrenotabile(ristorante, view);
+                    ristorante.getAddettoPrenotazione().getMenu().add(piatto);
                     invalidi = ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Piatto creato");
                     break;
@@ -482,151 +490,6 @@ public class Controller {
             default:
                 return null;
         }
-    }
-
-    /**
-     * <h2>Metodo che crea un prenotabile</h2><br>
-     * <b>Precondizione:</b> la tipologia non è null<br>
-     * @param tipologia tipologia del prenotabile da creare (MenuTematico o Piatto)
-     * @throws IllegalArgumentException se il gestore è null
-     * @return Prenotabile
-     */
-    private Prenotabile creaPrenotabile(String tipologia) {
-        //precondizione: la tipologia non è null
-        if (tipologia == null) throw new IllegalArgumentException("Tipologia non valida");
-
-        System.out.printf("\nInserisci i dati del %s \n\n", tipologia);
-        String nome = view.leggiStringaConSpazio(Costanti.INS_NOME);
-        float lavoro = (float) view.leggiDoubleConMinimo(Costanti.INS_LAVORO, 0);
-        ArrayList<LocalDate> disponibilita = new ArrayList<>();
-
-        do {
-            boolean data_errata; //variabile per permettere di reinserire immediamente delle nuvo disponibilità in caso quelle inserite siano scorrette
-            do {
-                String data_inizio_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_INIZIO);
-                String data_fine_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_FINE);
-
-                LocalDate data_inizio_parsata = Tempo.parsaData(data_inizio_da_parsare);
-                LocalDate data_fine_parsata = Tempo.parsaData(data_fine_da_parsare);
-
-                if(data_inizio_parsata == null || data_fine_parsata == null){
-                    System.out.println(Costanti.DATA_NON_VALIDA);
-                    data_errata = true;
-                } else {
-                    disponibilita.add(data_inizio_parsata);
-                    disponibilita.add(data_fine_parsata);
-                    data_errata = false;
-                };
-
-            } while (data_errata);
-        } while (view.yesOrNo("\nVuoi aggiungere un'altra disponibilità?"));
-        //in base alla tipologia creo oggetti diversi
-        if (tipologia.equals(Costanti.MENU_TEMATICO)) {
-            return new MenuTematico(nome, new ArrayList<>(), lavoro, disponibilita);
-        } else if (tipologia.equals(Costanti.PIATTO)) {
-            return new Piatto(nome, disponibilita, lavoro, new Ricetta());
-        }
-        return null;
-    }
-
-    /**
-     * <h2>Metodo che crea un menu tematico</h2><br>
-     * <b>Precondizione:</b> il ristorante non è null<br>
-     * <b>Postcondizione:</b> il menu tematico è creato e aggiunto al menu del ristorante<br>
-     * @param ristorante ristorante a cui aggiungere il menu tematico
-     * @throws IllegalArgumentException se il ristorante è null
-     */
-    public void creaMenuTematico(Ristorante ristorante) {
-        //precondizione: il ristorante non è null
-        if (ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
-
-        MenuTematico menu_tematico = (MenuTematico) creaPrenotabile(Costanti.MENU_TEMATICO);
-        ArrayList<Piatto> piatti = new ArrayList<>();
-        ArrayList<Prenotabile> menu_ristorante = ristorante.getAddettoPrenotazione().getMenu();
-
-        do {
-            //prima mostro i piatti presenti nel ristorante
-            view.mostraPiatti(menu_ristorante);
-
-            String nome_piatto = view.leggiStringaConSpazio(Costanti.INS_NOME);
-            //flag per salvarmi se il piatto è stato trovato o meno
-            boolean trovato = false;
-            for (Prenotabile piatto : menu_ristorante) {
-                //controllo che il piatto sia un piatto, che il nome sia uguale a quello inserito e che non sia già stato inserito nell'ArrayList piatti (ovvero quei piatti che saranno inseriti nel menù, solo sucessivamente)
-                if (piatto instanceof Piatto && piatto.getNome().equalsIgnoreCase(nome_piatto) && !piatti.contains(piatto)) {
-                    piatti.add((Piatto) piatto);
-                    trovato = true;
-                    break;
-                }
-            }
-            view.ripulisciConsole();
-
-            if (!trovato) view.stampaTesto("Piatto non trovato o già inserito nel menu");
-            else view.stampaTesto("Piatto aggiunto al menu");
-
-            view.premerePerContinuare();
-            //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro piatto se il piatto non è stato trovato
-        } while (piatti.size() < Costanti.MINIMO_PIATTI_PER_MENU || view.yesOrNo("Vuoi aggiungere un altro piatto al menu?"));
-        menu_tematico.setPiatti_menu(piatti);
-        menu_ristorante.add(menu_tematico);
-        //postcondizione: il menu tematico è creato e aggiunto al menu del ristorante
-        assert menu_ristorante.contains(menu_tematico);
-    }
-
-    /**
-     * <h2>Metodo che crea un piatto</h2><br>
-     * <b>Precondizione:</b> il gestore non è null<br>
-     * <b>Postcondizione:</b> il piatto è creato e aggiunto al menu del ristorante<br>
-     * @param ristorante ristorante dove il piatto è creato
-     * @throws IllegalArgumentException se il ristorante è null
-     */
-    public void creaPiatto(Ristorante ristorante) {
-        //precondizione: il ristorante non è null
-        if (ristorante == null) throw new IllegalArgumentException(Costanti.GESTORE_NON_NULLO);
-
-        Piatto piatto = (Piatto) creaPrenotabile(Costanti.PIATTO);
-
-        int n_porzioni = view.leggiInteroConMinimo("\nInserisci il numero di porzioni delle ricetta per cucinare il piatto: ", 1);
-        float lavoro_porzione = piatto.getLavoro_piatto();
-
-        //aggiunta degli ingredienti alla ricetta
-        ArrayList<Alimento> ingredienti_nuovo_piatto = new ArrayList<>();
-        do {
-            view.mostraAlimenti(ristorante.getMagazziniere().getMagazzino().getIngredienti());
-
-            String nome_ingrediente = view.leggiStringaConSpazio("\nInserisci il nome dell'ingrediente: ");
-            Ingrediente nuovo_ingrediente = new Ingrediente();
-            boolean trovato = false;
-            for (Alimento ingrediente : ristorante.getMagazziniere().getMagazzino().getIngredienti()) {
-                //controllo se ho già inserito l'ingrediente, in tal caso non lo aggiungo
-                boolean gia_presente = ingredienti_nuovo_piatto.stream().anyMatch(ingrediente_da_valutare -> ingrediente_da_valutare.getNome().equalsIgnoreCase(nome_ingrediente));
-                //controllo che l'ingrediente sia un ingrediente, che il nome sia uguale a quello inserito e che non sia già stato inserito nell'ArrayList ingredienti_nuovo_piatto (ovvero quegli ingredienti che saranno inseriti nella ricetta, solo sucessivamente)
-                if (ingrediente instanceof Ingrediente && ingrediente.getNome().equalsIgnoreCase(nome_ingrediente) && !gia_presente) {
-                    nuovo_ingrediente.setNome(ingrediente.getNome());
-                    nuovo_ingrediente.setQta((float) view.leggiDoubleConMinimo("Inserisci la quantità di " + nome_ingrediente + " in " + ingrediente.getMisura() + ": ", 0));
-                    nuovo_ingrediente.setMisura(ingrediente.getMisura());
-                    //controllo che la nuova qta sia diversa da 0, in tal caso aggiungo l'ingrediente alla ricetta
-                    if(nuovo_ingrediente.getQta() != 0.0) ingredienti_nuovo_piatto.add(nuovo_ingrediente);
-                    trovato = true;
-                    break; //esco dal for
-                }
-            }
-
-            view.ripulisciConsole();
-            //informo l'utente dell'esito dell'operazione di aggiunta dell'ingrediente alla ricetta
-            if (!trovato) view.stampaTesto("Ingrediente non trovato o già inserito nella ricetta");
-            else if(nuovo_ingrediente.getQta() == 0.0) view.stampaTesto("Quantità non valida");
-            else view.stampaTesto("Ingrediente aggiunto alla ricetta");
-
-            view.premerePerContinuare();
-            //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro ingrediente se l'ingrediente non è stato trovato
-        } while (ingredienti_nuovo_piatto.size() < Costanti.MINIMO_INGRED_PER_RICETTA || view.yesOrNo("\nVuoi aggiungere un altro ingrediente alla ricetta?"));
-
-        Ricetta ricetta = new Ricetta(ingredienti_nuovo_piatto, n_porzioni, lavoro_porzione);
-        piatto.setRicetta(ricetta);
-        ristorante.getAddettoPrenotazione().getMenu().add(piatto);
-        //postcondizione: il piatto è creato e aggiunto al menu del ristorante
-        assert ristorante.getAddettoPrenotazione().getMenu().contains(piatto);
     }
 
     private ArrayList<String> getVoci() {

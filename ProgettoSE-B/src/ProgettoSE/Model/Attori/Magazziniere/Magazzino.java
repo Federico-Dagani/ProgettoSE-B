@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class Magazzino {
     //ATTRIBUTI
-    private ArrayList<Alimento> bevande = new ArrayList<>();
-    private ArrayList<Alimento> extras = new ArrayList<>();
-    private ArrayList<Alimento> ingredienti = new ArrayList<>();
+    private ArrayList<Alimento> bevande;
+    private ArrayList<Alimento> extras;
+    private ArrayList<Alimento> ingredienti;
 
     //METODI
     /**

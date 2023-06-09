@@ -55,8 +55,9 @@ public class MyMenu {
         System.out.println(generaRigaCentrale());
         System.out.println(cornice_inf);
         System.out.println(cornice_sup);
-        for (int i = 0; i < voci.size(); i++) {
-            System.out.println(generaVoce((i + 1) + " " + FRECCETTA + " " + voci.get(i)));
+        for (int i = 1; i < voci.size(); i++) {
+           System.out.println(generaVoce(i + " " + FRECCETTA + " " + voci.get(i)));
+
         }
         System.out.println(generaVoce((0) + " " + FRECCETTA + " " + "esci"));
         System.out.println(cornice_inf);
@@ -145,6 +146,7 @@ public class MyMenu {
             case Costanti.ATTORI:
 
                 ArrayList<String> utenti = new ArrayList<>();
+                utenti.add("");
                 utenti.add(Costanti.GESTORE);
                 utenti.add(Costanti.UTENTE);
                 utenti.add(Costanti.TEMPO);
@@ -153,6 +155,7 @@ public class MyMenu {
             case Costanti.TEMPO:
 
                 ArrayList<String> azioni_tempo = new ArrayList<>();
+                azioni_tempo.add("");
                 azioni_tempo.add("Incrementa di un giorno");
                 azioni_tempo.add("Scegli una data");
                 return new MyMenu(Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.TEMPO.toUpperCase(Locale.ROOT), azioni_tempo);
@@ -160,6 +163,7 @@ public class MyMenu {
             case Costanti.INIZIALIZZAZIONE:
 
                 ArrayList<String> azioni_inizializzazione = new ArrayList<>();
+                azioni_inizializzazione.add("");
                 azioni_inizializzazione.add("Modifica il numero di posti del ristorante");
                 azioni_inizializzazione.add("Modifica il lavoro in carico ad ogni persona");
                 azioni_inizializzazione.add("Aggiungi un ingrediente");

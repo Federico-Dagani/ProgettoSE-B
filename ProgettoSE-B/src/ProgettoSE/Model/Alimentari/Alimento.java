@@ -30,9 +30,9 @@ abstract public class Alimento {
     public float getQta() {
         return qta;
     }
-    public String getMisura() {
-        return misura;
-    }
+    public String getMisura() {return misura;}
+    public float getCons_procapite(){return 0;}
+
     //setters
     public void setNome(String nome) {
         this.nome = nome;
@@ -44,8 +44,4 @@ abstract public class Alimento {
         this.misura = misura;
     }
 
-    //problemaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    public float getCons_procapite() {
-        return 0;
-    }
 }
