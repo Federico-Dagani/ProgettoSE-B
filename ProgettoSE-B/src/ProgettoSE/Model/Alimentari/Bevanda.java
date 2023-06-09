@@ -1,6 +1,6 @@
 package ProgettoSE.Model.Alimentari;
 
-public class Bevanda extends Alimento {
+public class Bevanda extends Alimento{
     //ATTRIBUTI
     private final float cons_procapite;
     //METODI

@@ -14,10 +14,7 @@ import ProgettoSE.Model.Attori.Magazziniere.Magazzino;
 import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Tempo;
 
-import ProgettoSE.Model.Produzione.Menu.MenuTematico;
-import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
-import ProgettoSE.Model.Produzione.Ricetta;
 import ProgettoSE.Utility.Costanti;
 import ProgettoSE.Utility.MyMenu;
 
@@ -38,6 +35,7 @@ public class Controller {
         this.view = view;
         this.options = new ArrayList<>();
     }
+
     private void setOptions(Ristorante ristorante) {
         options.clear();
         options.add(new Option("Visualizza il carico di lavoro per persona", new VisualizzaCaricoLavoro()));

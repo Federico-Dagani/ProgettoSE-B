@@ -1,8 +1,6 @@
 package ProgettoSE.View;
 
 import ProgettoSE.Model.Alimentari.Alimento;
-import ProgettoSE.Model.Alimentari.Bevanda;
-import ProgettoSE.Model.Alimentari.Extra;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
