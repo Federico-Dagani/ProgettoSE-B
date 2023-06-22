@@ -10,41 +10,12 @@ import ProgettoSE.Model.Produzione.Ricetta;
 import ProgettoSE.Utility.Costanti;
 import ProgettoSE.View.View;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class PiattoFactory implements PrenotabileFactory {
+public class PiattoFactory extends PrenotabileFactory {
 
     @Override
-    public Prenotabile creaPrenotabile(Ristorante ristorante, View view) {
-
-        view.stampaTesto("\nInserisci i dati del piatto \n\n");
-        String nome = view.leggiStringaConSpazio(Costanti.INS_NOME);
-        float lavoro = (float) view.leggiDoubleConMinimo(Costanti.INS_LAVORO, 0);
-        ArrayList<LocalDate> disponibilita = new ArrayList<>();
-
-        do {
-            boolean data_errata; //variabile per permettere di reinserire immediamente delle nuvo disponibilità in caso quelle inserite siano scorrette
-            do {
-                String data_inizio_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_INIZIO);
-                String data_fine_da_parsare = view.leggiStringaNonVuota(Costanti.INS_DATA_FINE);
-
-                LocalDate data_inizio_parsata = Tempo.parsaData(data_inizio_da_parsare);
-                LocalDate data_fine_parsata = Tempo.parsaData(data_fine_da_parsare);
-
-                if (data_inizio_parsata == null || data_fine_parsata == null) {
-                    view.stampaTesto(Costanti.DATA_NON_VALIDA);
-                    data_errata = true;
-                } else {
-                    disponibilita.add(data_inizio_parsata);
-                    disponibilita.add(data_fine_parsata);
-                    data_errata = false;
-                }
-                ;
-
-            } while (data_errata);
-        } while (view.yesOrNo("\nVuoi aggiungere un'altra disponibilità?"));
-
+    public void datiSpecificiPrenotabile(View view, Ristorante ristorante, Prenotabile piatto) {
 
         int n_porzioni = view.leggiInteroConMinimo("\nInserisci il numero di porzioni delle ricetta per cucinare il piatto: ", 1);
 
@@ -83,7 +54,8 @@ public class PiattoFactory implements PrenotabileFactory {
             //tramite il cortocircuito evito di chiedere se si vuole aggiungere un altro ingrediente se l'ingrediente non è stato trovato
         } while (ingredienti_nuovo_piatto.size() < Costanti.MINIMO_INGRED_PER_RICETTA || view.yesOrNo("\nVuoi aggiungere un altro ingrediente alla ricetta?"));
 
-        return new Piatto(nome, disponibilita, lavoro, new Ricetta(ingredienti_nuovo_piatto, n_porzioni, lavoro));
-
+        if(piatto instanceof Piatto){
+            ((Piatto)piatto).setRicetta(new Ricetta(ingredienti_nuovo_piatto, n_porzioni, ((Piatto) piatto).getLavoro_piatto()));
+        }
     }
 }

@@ -19,9 +19,6 @@ abstract public class Menu {
     public ArrayList<Piatto> getPiatti_menu() {
         return piatti_menu;
     }
-    public void setPiatti_menu(ArrayList<Piatto> piatti_menu) {
-        this.piatti_menu = piatti_menu;
-    }
 
     public void aggiungiPiatto(Piatto piatto){
         piatti_menu.add(piatto);
@@ -38,6 +35,10 @@ abstract public class Menu {
                 return piatto;
         }
         return null;
+    }
+
+    public void setPiatti(ArrayList<Piatto> piatti_menu) {
+        this.piatti_menu = piatti_menu;
     }
 
 }

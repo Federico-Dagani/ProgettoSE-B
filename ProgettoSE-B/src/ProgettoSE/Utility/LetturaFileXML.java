@@ -210,7 +210,7 @@ public class LetturaFileXML {
                                         //leggo il carico di lavoro del menu tematico
                                         case Costanti.LAVORO_MENU:
                                             float lavoro_menu = Float.parseFloat(xmlreader.getAttributeValue(i));
-                                            menu_tematico.setLavoro_menu(lavoro_menu);
+                                            menu_tematico.setLavoro(lavoro_menu);
                                             break;
                                     }
                                 }
@@ -234,7 +234,7 @@ public class LetturaFileXML {
                             case Costanti.PIATTO:
                                 //controllo aggiuntivo necessario per evitare di aggiungere un piatto vuoto alla lista dei piatti del menu
                                 if (xmlreader.isEndElement()) {
-                                    piatto.setLavoro_piatto(ricetta.getLavoro_porzione());
+                                    piatto.setLavoro(ricetta.getLavoro_porzione());
                                     piatto.setRicetta(ricetta);
                                     menu_carta.aggiungiPiatto(piatto);
                                 }

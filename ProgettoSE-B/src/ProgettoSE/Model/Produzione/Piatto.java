@@ -1,7 +1,6 @@
 package ProgettoSE.Model.Produzione;
 
 import ProgettoSE.Model.Alimentari.Alimento;
-import ProgettoSE.Model.Alimentari.Ingrediente;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,6 +60,10 @@ public class Piatto implements Prenotabile {
         return disponibilità;
     }
 
+    public void setDisponibilita(ArrayList<LocalDate> disponibilità) {
+        this.disponibilità = disponibilità;
+    }
+
     /**
      * <h2>Metodo che setta la disponibilità del piatto</h2>
      * @param disponibilità disponibilità del piatto
@@ -81,7 +84,7 @@ public class Piatto implements Prenotabile {
      * <h2>Metodo che setta il lavoro per preparare il piatto</h2>
      * @param lavoro_piatto lavoro per preparare il piatto
      */
-    public void setLavoro_piatto(float lavoro_piatto) {
+    public void setLavoro(float lavoro_piatto) {
         this.lavoro_piatto = lavoro_piatto;
     }
 

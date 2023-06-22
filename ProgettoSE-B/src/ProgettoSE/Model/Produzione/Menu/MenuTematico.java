@@ -3,6 +3,7 @@ package ProgettoSE.Model.Produzione.Menu;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 
+import java.security.PublicKey;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -27,6 +28,13 @@ public class MenuTematico extends Menu implements Prenotabile {
         this.nome = nome;
     }
 
+    public MenuTematico(){
+        super(new ArrayList<>());
+        this.lavoro_menu = 0;
+        this.disponibilità = new ArrayList<>();
+        this.nome = "";
+    }
+    ;
     //GET E SET
     @Override
     public String getNome() {
@@ -41,12 +49,16 @@ public class MenuTematico extends Menu implements Prenotabile {
         return lavoro_menu;
     }
 
-    public void setLavoro_menu(float lavoro_menu) {
+    public void setLavoro(float lavoro_menu) {
         this.lavoro_menu = lavoro_menu;
     }
 
     public ArrayList<LocalDate> getDisponibilità() {
         return disponibilità;
+    }
+
+    public void setDisponibilita(ArrayList<LocalDate> disponibilità) {
+        this.disponibilità = disponibilità;
     }
 
     public void setDisponibilità(ArrayList<LocalDate> disponibilità) {

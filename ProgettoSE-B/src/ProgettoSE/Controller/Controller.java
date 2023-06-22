@@ -16,6 +16,8 @@ import ProgettoSE.Model.Attori.Magazziniere.Magazzino;
 import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Tempo;
 
+import ProgettoSE.Model.Produzione.Menu.MenuTematico;
+import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Utility.Costanti;
 import ProgettoSE.Utility.MyMenu;
@@ -38,7 +40,7 @@ public class Controller {
         this.options = new ArrayList<>();
     }
 
-    private void setOptions(Ristorante ristorante) {
+    private void setOptions() {
         options.clear();
         options.add(new Option("Visualizza il carico di lavoro per persona", new VisualizzaCaricoLavoro()));
         options.add(new Option("Visualizza il numero di posti a sedere disponibili", new VisualizzaPostiSedere()));
@@ -49,7 +51,6 @@ public class Controller {
         options.add(new Option("Visualizza i menu tematici presenti nel menu", new VisualizzaMenuTematici()));
         options.add(new Option("Visualizza i piatti presenti nel menu", new VisualizzaPiatti()));
         options.add(new Option("Visualizza il ricettario", new VisualizzaRicettario()));
-
     }
 
     /**
@@ -131,7 +132,7 @@ public class Controller {
         if(ristorante == null) throw new IllegalArgumentException(Costanti.RISTORANTE_NON_NULLO);
 
         int scelta;
-        setOptions(ristorante);
+        setOptions();
         MyMenu menu_gestore = new MyMenu("     " + Costanti.FUNZIONALITA.toUpperCase(Locale.ROOT) + Costanti.GESTORE.toUpperCase(Locale.ROOT) + "     ", this.getVoci());
         do {
             scelta = menu_gestore.scegliConUscita(view);
@@ -423,14 +424,16 @@ public class Controller {
                     break;
 
                 case 6://aggiungi menu tematico
-                    Prenotabile menu = menuTematicoFactory.creaPrenotabile(ristorante, view);
-                    ristorante.getAddettoPrenotazione().getMenu().add(menu);
+                    MenuTematico menuTematico = new MenuTematico();
+                    menuTematicoFactory.creaPrenotabile(menuTematico, ristorante, view);
+                    ristorante.getAddettoPrenotazione().getMenu().add(menuTematico);
                     invalidi = ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Menu tematico creato");
                     break;
 
                 case 7://aggiungi piatto
-                    Prenotabile piatto = piattoFactory.creaPrenotabile(ristorante, view);
+                    Piatto piatto = new Piatto();
+                    piattoFactory.creaPrenotabile(piatto, ristorante, view);
                     ristorante.getAddettoPrenotazione().getMenu().add(piatto);
                     invalidi = ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
                     aggiungiPrenotabile(invalidi, "Piatto creato");

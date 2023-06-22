@@ -16,4 +16,11 @@ public interface Prenotabile {
     ArrayList<LocalDate> getDisponibilità();
 
     ArrayList<String> mostraPrenotabile();
+
+    void setNome(String nome);
+
+    void setLavoro(float lavoro);
+
+    void setDisponibilita(ArrayList<LocalDate> disponibilita);
+
 }
