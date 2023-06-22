@@ -11,6 +11,7 @@ import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Model.Produzione.Ricetta;
 
+import javax.sql.rowset.spi.XmlReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -80,27 +81,7 @@ public class LetturaFileXML {
 
                             //lettura tag <ristorante ...>
                             case Costanti.RISTORANTE:
-
-                                //itero sul numero di attributi presenti nel tag ristorante e li leggo
-                                for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
-                                    //switcho sui tipi di attributi
-                                    switch (xmlreader.getAttributeLocalName(i)) {
-
-                                        //attributo id
-                                        case Costanti.N_POSTI:
-                                            //leggo n_posti , visto che ritorna una stringa dal metodo faccio il cast
-                                            int n_posti = Integer.parseInt(xmlreader.getAttributeValue(i));
-                                            ristorante.setN_posti(n_posti);
-                                            break;
-
-                                        //attributo lavoro_persone
-                                        case Costanti.LAVORO_PERSONE:
-                                            //leggo lavoro_persona , visto che ritorna una stringa dal metodo faccio il cast
-                                            int lavoro_persone = Integer.parseInt(xmlreader.getAttributeValue(i));
-                                            ristorante.setLavoro_persona(lavoro_persone);
-                                            break;
-                                    }
-                                }
+                                ristoranteCase(xmlreader, ristorante);
                                 break;
 
                             case Costanti.MAGAZZINIERE:
@@ -132,22 +113,7 @@ public class LetturaFileXML {
                                 break;
 
                             case Costanti.PIATTO:
-                                //creo un oggetto di tipo piatto e lo aggiungo alla lista menu
-                                piatto = new Piatto(null, new ArrayList<>(), 0, ricetta);
-                                String nome_piatto;
-
-                                //Questo ciclo for con il seguente switch potrebbe essere eliminato (visto che c'è un solo attributo)
-                                //Ho deciso di lasciarlo per le implementazioni future di più attributi di un piatto
-                                for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
-
-                                    switch (xmlreader.getAttributeLocalName(i)) {
-                                        //leggo il nome del piatto
-                                        case Costanti.NOME:
-                                            nome_piatto = xmlreader.getAttributeValue(i);
-                                            piatto.setNome(nome_piatto);
-                                            break;
-                                    }
-                                }
+                                piattoCase(piatto, ricetta, xmlreader);
                                 break;
 
                             case Costanti.DISPONIBILITA:
@@ -156,23 +122,7 @@ public class LetturaFileXML {
                                 break;
 
                             case Costanti.RICETTA:
-                                //leggo la ricetta del piatto
-                                ingredienti = new ArrayList<>();
-                                ricetta = new Ricetta(new ArrayList<>(), 0, 0);
-
-                                for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
-
-                                    switch (xmlreader.getAttributeLocalName(i)) {
-                                        //leggo le porzioni della ricetta
-                                        case Costanti.N_PORZIONI:
-                                            ricetta.setN_porzioni(Integer.parseInt(xmlreader.getAttributeValue(i)));
-                                            break;
-                                        //leggo il carico di lavoro per porzione della ricetta
-                                        case Costanti.LAVORO_PORZIONE:
-                                            ricetta.setLavoro_porzione(Float.parseFloat(xmlreader.getAttributeValue(i)));
-                                            break;
-                                    }
-                                }
+                                ricettaCase(ingredienti, ricetta, xmlreader);
                                 break;
 
                             case Costanti.DISPONIBILITA_MENU:
@@ -181,39 +131,11 @@ public class LetturaFileXML {
                                 break;
 
                             case Costanti.PORTATA:
-                                //leggo le portate del menu e le aggiungo alla lista di piatti del menu
-                                for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
-
-                                    switch (xmlreader.getAttributeLocalName(i)) {
-                                        //leggo il nome della portata, la cerco nella lista dei piatti del ristorante e la aggiungo alla lista di piatti del menu tematico
-                                        case Costanti.NOME:
-                                            String nome_portata = xmlreader.getAttributeValue(i);
-                                            Piatto portata = menu_carta.getPiatto(nome_portata);
-                                            menu_tematico.aggiungiPiatto(portata);
-                                            break;
-                                    }
-                                }
+                                portataCase(xmlreader, menu_carta, menu_tematico);
                                 break;
 
                             case Costanti.MENU_TEMATICO:
-                                //creo un oggetto di tipo menu tematico
-                                menu_tematico = new MenuTematico("", new ArrayList<>(), 0, new ArrayList<>());
-
-                                for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
-
-                                    switch (xmlreader.getAttributeLocalName(i)) {
-                                        //leggo il nome del menu tematico
-                                        case Costanti.NOME:
-                                            String nome_menu = xmlreader.getAttributeValue(i);
-                                            menu_tematico.setNome(nome_menu);
-                                            break;
-                                        //leggo il carico di lavoro del menu tematico
-                                        case Costanti.LAVORO_MENU:
-                                            float lavoro_menu = Float.parseFloat(xmlreader.getAttributeValue(i));
-                                            menu_tematico.setLavoro(lavoro_menu);
-                                            break;
-                                    }
-                                }
+                                menuTematicoCase(menu_tematico, xmlreader);
                                 break;
                         }
                     //evento di fine lettura elemento
@@ -241,9 +163,7 @@ public class LetturaFileXML {
                                 break;
                             //aggiungo il menu tematico al menu complessivo
                             case Costanti.MENU_TEMATICO:
-                                if (xmlreader.isEndElement()) {
-                                        addetto_prenotazione.aggiungiMenu_tematico(menu_tematico);
-                                }
+                                if (xmlreader.isEndElement()) addetto_prenotazione.aggiungiMenu_tematico(menu_tematico);
                                 break;
                         }
                         break;
@@ -359,6 +279,104 @@ public class LetturaFileXML {
         } catch (Exception e) {
             System.out.println(Costanti.ERRORE_INIZIALIZZAZIONE_READER);
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void piattoCase(Piatto piatto, Ricetta ricetta, XMLStreamReader xmlreader){
+        //creo un oggetto di tipo piatto e lo aggiungo alla lista menu
+        piatto = new Piatto(null, new ArrayList<>(), 0, ricetta);
+        String nome_piatto;
+
+        //Questo ciclo for con il seguente switch potrebbe essere eliminato (visto che c'è un solo attributo)
+        //Ho deciso di lasciarlo per le implementazioni future di più attributi di un piatto
+        for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
+
+            switch (xmlreader.getAttributeLocalName(i)) {
+                //leggo il nome del piatto
+                case Costanti.NOME:
+                    nome_piatto = xmlreader.getAttributeValue(i);
+                    piatto.setNome(nome_piatto);
+                    break;
+            }
+        }
+    }
+
+    private void ristoranteCase(XMLStreamReader xmlreader, Ristorante ristorante){
+        //itero sul numero di attributi presenti nel tag ristorante e li leggo
+        for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
+            //switcho sui tipi di attributi
+            switch (xmlreader.getAttributeLocalName(i)) {
+
+                //attributo id
+                case Costanti.N_POSTI:
+                    //leggo n_posti , visto che ritorna una stringa dal metodo faccio il cast
+                    int n_posti = Integer.parseInt(xmlreader.getAttributeValue(i));
+                    ristorante.setN_posti(n_posti);
+                    break;
+
+                //attributo lavoro_persone
+                case Costanti.LAVORO_PERSONE:
+                    //leggo lavoro_persona , visto che ritorna una stringa dal metodo faccio il cast
+                    int lavoro_persone = Integer.parseInt(xmlreader.getAttributeValue(i));
+                    ristorante.setLavoro_persona(lavoro_persone);
+                    break;
+            }
+        }
+    }
+
+    private void ricettaCase(ArrayList<Alimento> ingredienti, Ricetta ricetta, XMLStreamReader xmlreader){
+        //leggo la ricetta del piatto
+        ingredienti = new ArrayList<>();
+        ricetta = new Ricetta(new ArrayList<>(), 0, 0);
+
+        for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
+
+            switch (xmlreader.getAttributeLocalName(i)) {
+                //leggo le porzioni della ricetta
+                case Costanti.N_PORZIONI:
+                    ricetta.setN_porzioni(Integer.parseInt(xmlreader.getAttributeValue(i)));
+                    break;
+                //leggo il carico di lavoro per porzione della ricetta
+                case Costanti.LAVORO_PORZIONE:
+                    ricetta.setLavoro_porzione(Float.parseFloat(xmlreader.getAttributeValue(i)));
+                    break;
+            }
+        }
+    }
+
+    private void portataCase(XMLStreamReader xmlreader, MenuCarta menu_carta, MenuTematico menu_tematico){
+        //leggo le portate del menu e le aggiungo alla lista di piatti del menu
+        for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
+
+            switch (xmlreader.getAttributeLocalName(i)) {
+                //leggo il nome della portata, la cerco nella lista dei piatti del ristorante e la aggiungo alla lista di piatti del menu tematico
+                case Costanti.NOME:
+                    String nome_portata = xmlreader.getAttributeValue(i);
+                    Piatto portata = menu_carta.getPiatto(nome_portata);
+                    menu_tematico.aggiungiPiatto(portata);
+                    break;
+            }
+        }
+    }
+
+    private void menuTematicoCase(MenuTematico menu_tematico, XMLStreamReader xmlreader){
+        //creo un oggetto di tipo menu tematico
+        menu_tematico = new MenuTematico("", new ArrayList<>(), 0, new ArrayList<>());
+
+        for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
+
+            switch (xmlreader.getAttributeLocalName(i)) {
+                //leggo il nome del menu tematico
+                case Costanti.NOME:
+                    String nome_menu = xmlreader.getAttributeValue(i);
+                    menu_tematico.setNome(nome_menu);
+                    break;
+                //leggo il carico di lavoro del menu tematico
+                case Costanti.LAVORO_MENU:
+                    float lavoro_menu = Float.parseFloat(xmlreader.getAttributeValue(i));
+                    menu_tematico.setLavoro(lavoro_menu);
+                    break;
+            }
         }
     }
 }
