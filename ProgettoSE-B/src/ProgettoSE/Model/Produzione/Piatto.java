@@ -28,6 +28,14 @@ public class Piatto implements Prenotabile {
         this.ricetta = ricetta;
     }
 
+    public Piatto(){
+        this.nome = "";
+        this.disponibilità = new ArrayList<>();
+        this.lavoro_piatto = 0;
+        this.ricetta = new Ricetta();
+
+    };
+
     /**
      * <h2>Metodo che restituisce il nome del piatto</h2>
      * @return String nome del piatto

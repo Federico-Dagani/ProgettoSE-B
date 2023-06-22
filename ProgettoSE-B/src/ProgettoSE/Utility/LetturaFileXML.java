@@ -33,7 +33,7 @@ public class LetturaFileXML {
         //precondizione: il nome del file non può essere nullo o vuoto
         if(filename == null || filename.equals("")) throw new IllegalArgumentException("Il nome del file non può essere nullo o vuoto");
 
-        XMLInputFactory xmlif;
+        XMLInputFactory xmlif = null;
         XMLStreamReader xmlreader = null;
 
         //attributi magazziniere
@@ -57,14 +57,7 @@ public class LetturaFileXML {
         Ricetta ricetta = new Ricetta(new ArrayList<>(), 0, 0);
         Piatto piatto = new Piatto(null, new ArrayList<>(), 0, ricetta);
 
-        //try catch per gestire eventuali eccezioni durante l'inizializzazione
-        try {
-            xmlif = XMLInputFactory.newInstance();
-            xmlreader = xmlif.createXMLStreamReader(filename, new FileInputStream(filename));
-        } catch (Exception e) {
-            System.out.println(Costanti.ERRORE_INIZIALIZZAZIONE_READER);
-            System.out.println(e.getMessage());
-        }
+        inzializzazioneReader(xmlif, xmlreader, filename);
 
         //try catch per gestire errori durante la lettura dei luoghi
         try {
@@ -356,5 +349,16 @@ public class LetturaFileXML {
         //postcondizione: la disponibilità deve essere un numero pari di date e non deve essere vuota
         assert disponibilita.size() % 2 == 0 && disponibilita.size() > 0 : "Disponibilità non valida";
         return disponibilita;
+    }
+
+    private void inzializzazioneReader(XMLInputFactory xmlif, XMLStreamReader xmlreader, String filename){
+        //try catch per gestire eventuali eccezioni durante l'inizializzazione
+        try {
+            xmlif = XMLInputFactory.newInstance();
+            xmlreader = xmlif.createXMLStreamReader(filename, new FileInputStream(filename));
+        } catch (Exception e) {
+            System.out.println(Costanti.ERRORE_INIZIALIZZAZIONE_READER);
+            System.out.println(e.getMessage());
+        }
     }
 }

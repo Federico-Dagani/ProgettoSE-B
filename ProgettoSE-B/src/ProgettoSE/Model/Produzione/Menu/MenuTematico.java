@@ -62,6 +62,10 @@ public class MenuTematico extends Menu implements Prenotabile {
         this.disponibilità.add(periodo.get(1));
     }
 
+    public void setPiatti(ArrayList<Piatto> piatti){
+        super.setPiatti(piatti);
+    }
+
     public ArrayList<String> mostraPrenotabile(){
         ArrayList<String> lista = new ArrayList<>();
         lista.add(this.nome);

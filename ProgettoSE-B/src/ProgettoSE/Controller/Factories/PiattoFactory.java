@@ -4,7 +4,6 @@ import ProgettoSE.Controller.PrenotabileFactory;
 import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Alimentari.Ingrediente;
 import ProgettoSE.Model.Attori.Gestore.Ristorante;
-import ProgettoSE.Model.Attori.Tempo;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Model.Produzione.Ricetta;

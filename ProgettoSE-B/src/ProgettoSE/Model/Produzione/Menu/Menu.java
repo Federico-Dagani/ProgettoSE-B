@@ -1,7 +1,6 @@
 package ProgettoSE.Model.Produzione.Menu;
 
 import ProgettoSE.Model.Produzione.Piatto;
-
 import java.util.ArrayList;
 
 abstract public class Menu {
