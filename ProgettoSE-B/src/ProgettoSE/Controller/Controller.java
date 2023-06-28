@@ -375,37 +375,18 @@ public class Controller {
 
         Magazzino magazzino = ristorante.getMagazziniere().getMagazzino();
 
-        ArrayList<Prenotabile> invalidi;
+        ArrayList<Prenotabile> invalidi = new ArrayList<>();
 
         while (scelta_inizializza != 0) {
 
             switch (scelta_inizializza) {
 
                 case 1: //modifica n_posti ristorante
-                    int n_posti = view.leggiInteroConMinimo("\nInserisci il nuovo numero di posti del ristorante: ", 1);
-                    //comuninco che il numero di posti è uguale a quello attuale
-                    if(n_posti == ristorante.getN_posti())
-                        view.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");
-                    else
-                        ristorante.setN_posti(n_posti);
-                    view.premerePerContinuare();
+                    modificaNumeroPostiRistorante(ristorante);
                     break;
 
                 case 2: //modifica lavoro_persona
-                    int lavoro_persona = view.leggiInteroConMinimo("\n" + Costanti.INS_LAVORO_PERSONA, 1);
-                    //comuninco che il numero di lavoro per persona è uguale a quello attuale
-                    if(lavoro_persona == ristorante.getLavoro_persona())
-                        view.stampaTesto(Costanti.UGUALE_ATTUALE,"lavoro per persona");
-                    else
-                        ristorante.setLavoro_persona(lavoro_persona);
-
-                    ArrayList<Prenotabile> prenotabili_invalidi = new ArrayList<>();
-                    prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona()));
-                    prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona()));
-
-                    //se il messaggio è vuoto vuol dire che non ci sono errori sia nei menu che nelle ricette
-                    view.stampaElementiInvalidi(prenotabili_invalidi);
-                    view.premerePerContinuare();
+                    modificaLavoroPersona(ristorante);
                     break;
 
                 case 3://aggiungi ingrediente in magazzino
@@ -424,25 +405,52 @@ public class Controller {
                     break;
 
                 case 6://aggiungi menu tematico
-                    MenuTematico menuTematico = new MenuTematico();
-                    menuTematicoFactory.creaPrenotabile(menuTematico, ristorante, view);
-                    ristorante.getAddettoPrenotazione().getMenu().add(menuTematico);
-                    invalidi = ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona());
-                    aggiungiPrenotabile(invalidi, "Menu tematico creato");
+                    aggiungiMenuTematico(ristorante, menuTematicoFactory, invalidi);
                     break;
 
                 case 7://aggiungi piatto
-                    Piatto piatto = new Piatto();
-                    piattoFactory.creaPrenotabile(piatto, ristorante, view);
-                    ristorante.getAddettoPrenotazione().getMenu().add(piatto);
-                    invalidi = ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
-                    aggiungiPrenotabile(invalidi, "Piatto creato");
+                    aggiungiPiatto(ristorante, piattoFactory, invalidi);
                     break;
             }
             view.ripulisciConsole();
             scelta_inizializza = menu_inizializza.scegliConUscita(view);
             view.ripulisciConsole();
         }
+    }
+
+    private void modificaNumeroPostiRistorante(Ristorante ristorante){
+        int n_posti = view.leggiInteroConMinimo("\nInserisci il nuovo numero di posti del ristorante: ", 1);
+        //comuninco che il numero di posti è uguale a quello attuale
+        if(n_posti == ristorante.getN_posti())
+            view.stampaTesto(Costanti.UGUALE_ATTUALE ,"posti");
+        else
+            ristorante.setN_posti(n_posti);
+        view.premerePerContinuare();
+    }
+
+    private void modificaLavoroPersona(Ristorante ristorante){
+        int lavoro_persona = view.leggiInteroConMinimo("\n" + Costanti.INS_LAVORO_PERSONA, 1);
+        //comuninco che il numero di lavoro per persona è uguale a quello attuale
+        if(lavoro_persona == ristorante.getLavoro_persona())
+            view.stampaTesto(Costanti.UGUALE_ATTUALE,"lavoro per persona");
+        else
+            ristorante.setLavoro_persona(lavoro_persona);
+
+        ArrayList<Prenotabile> prenotabili_invalidi = new ArrayList<>();
+        prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona()));
+        prenotabili_invalidi.addAll(ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona()));
+
+        //se il messaggio è vuoto vuol dire che non ci sono errori sia nei menu che nelle ricette
+        view.stampaElementiInvalidi(prenotabili_invalidi);
+        view.premerePerContinuare();
+    }
+
+    private void aggiungiMenuTematico(Ristorante ristorante, MenuTematicoFactory menuTematicoFactory, ArrayList<Prenotabile> invalidi){
+        MenuTematico menuTematico = new MenuTematico();
+        menuTematicoFactory.creaPrenotabile(menuTematico, ristorante, view);
+        ristorante.getAddettoPrenotazione().getMenu().add(menuTematico);
+        invalidi = ristorante.getAddettoPrenotazione().controllaMenu(ristorante.getLavoro_persona());
+        aggiungiPrenotabile(invalidi, "Menu tematico creato");
     }
 
     public void aggiungiAlimento(Alimento nuovo_alimento, Magazzino magazzino){
@@ -452,6 +460,14 @@ public class Controller {
         if(result) view.stampaTesto("%s aggiunt* al magazzino", tipo);
         else view.stampaTesto("%s già presente in magazzino", tipo);
         view.premerePerContinuare();
+    }
+
+    private void aggiungiPiatto(Ristorante ristorante, PiattoFactory piattoFactory, ArrayList<Prenotabile> invalidi){
+        Piatto piatto = new Piatto();
+        piattoFactory.creaPrenotabile(piatto, ristorante, view);
+        ristorante.getAddettoPrenotazione().getMenu().add(piatto);
+        invalidi = ristorante.getAddettoPrenotazione().controllaRicette(ristorante.getLavoro_persona());
+        aggiungiPrenotabile(invalidi, "Piatto creato");
     }
 
     public void aggiungiPrenotabile(ArrayList<Prenotabile> invalidi, String mex) {
