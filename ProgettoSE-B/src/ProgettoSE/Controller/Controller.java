@@ -16,6 +16,7 @@ import ProgettoSE.Model.Attori.Magazziniere.Magazzino;
 import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Tempo;
 
+import ProgettoSE.Model.Produzione.Menu.Menu;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
@@ -227,7 +228,7 @@ public class Controller {
         int n_coperti = view.leggiInteroConMinimoMassimo("Numero persone: ", 1, Math.min(posti_liberi_effettivi, posti_liberi_stimati * 2));
 
         inserisciSceltePrenotazione(ristorante, data_prenotazione, cliente, n_coperti);
-
+        view.premerePerContinuare();
         view.ripulisciConsole();
 
     }
@@ -261,50 +262,18 @@ public class Controller {
             if (n_portate < n_coperti)
                 view.stampaTesto("Deve scelgliere almeno altre %s portate per convalidare la prenotazione.", String.valueOf(n_coperti - n_portate));
 
-            boolean validita = false;
-            Prenotabile portata = null;
+            Prenotabile portata = scegliPortata(menu_del_giorno);
 
-            do {
-                String scelta = view.leggiStringa("Inserisca il nome della portata da ordinare: ");
-                //controllo che la portata scelta sia presente nel menu del giorno
-                for (Prenotabile prenotabile : menu_del_giorno) {
-                    if (prenotabile.getNome().equalsIgnoreCase(scelta)) {
-                        portata = prenotabile;
-                        validita = true;
-                    }
-                }
-                if (!validita)
-                    view.leggiStringa("Portata non presente nel menu del giorno.");
-            } while (!validita);
-
-            int quantità = view.leggiInteroConMinimo("Inserisca le porzioni desiderate di " + portata.getNome().toLowerCase(Locale.ROOT) + ": ", 0);
-
-            //devo leggere il value precedente e sommarlo alla nuova quantità aggiunta, dopodichè rimetto la value nuova nella Map
             Integer quantita_precedente = scelte.get(portata);
-            if (quantita_precedente == null)
-                quantita_precedente = 0;
-            if (quantita_precedente + quantità != 0)
-                scelte.put(portata, quantità + quantita_precedente);
+            if (quantita_precedente == null) {quantita_precedente = 0;}
+            Integer quantita = scegliQuantita(scelte, portata, quantita_precedente);
 
             Prenotazione prenotazione = new Prenotazione(null, n_coperti, data_prenotazione, scelte, cons_bevande, cons_extra);
 
             boolean lavoro_validato = ristorante.getAddettoPrenotazione().validaCaricoLavoro(data_prenotazione, lavoro_persona, n_posti, prenotazione);
-
             view.ripulisciConsole();
 
-            if (lavoro_validato && quantità > 0)
-                view.stampaTesto("Portata aggiunta all'ordine.");
-            else if (!lavoro_validato) {
-
-                view.stampaTesto("Il carico di lavoro non ci permette di accettare un così alto numero di portate. Rimosso dalla lista: " + portata.getNome() + " x" + quantità);
-                //tolgo la portata inserita che fa eccedere il carico di lavoro totale e reinserisco
-                scelte.remove(portata);
-                if (quantita_precedente != 0) scelte.put(portata, quantita_precedente);
-
-            } else if (quantità == 0) view.stampaTesto("Portata non aggiunta all'ordine.");
-
-            view.premerePerContinuare();
-            view.ripulisciConsole();
+            valutaScelta(scelte, portata, quantita_precedente, quantita, lavoro_validato);
 
             n_portate = 0;
             for (Integer value : scelte.values())
@@ -318,6 +287,47 @@ public class Controller {
         view.stampaTesto("Prenotazione Registrata.\n");
     }
 
+    private Prenotabile scegliPortata(ArrayList<Prenotabile> menu_del_giorno){
+        boolean validita = false;
+        Prenotabile portata = null;
+        do {
+            String scelta = view.leggiStringa("Inserisca il nome della portata da ordinare: ");
+            //controllo che la portata scelta sia presente nel menu del giorno
+            for (Prenotabile prenotabile : menu_del_giorno) {
+                if (prenotabile.getNome().equalsIgnoreCase(scelta)) {
+                    portata = prenotabile;
+                    validita = true;
+                }
+            }
+            if (!validita)
+                view.leggiStringa("Portata non presente nel menu del giorno.");
+        } while (!validita);
+        return portata;
+    }
+
+    private Integer scegliQuantita(HashMap<Prenotabile, Integer> scelte, Prenotabile portata, Integer quantita_precedente){
+        int quantita = view.leggiInteroConMinimo("Inserisca le porzioni desiderate di " + portata.getNome().toLowerCase(Locale.ROOT) + ": ", 0);
+        if (quantita_precedente + quantita != 0)
+            scelte.put(portata, quantita + quantita_precedente);
+        return quantita;
+    }
+
+    private void valutaScelta(HashMap<Prenotabile, Integer> scelte, Prenotabile portata, Integer quantita_precedente, Integer quantita, boolean lavoro_validato){
+
+        if (lavoro_validato && quantita > 0)
+            view.stampaTesto("Portata aggiunta all'ordine.");
+        else if (!lavoro_validato) {
+
+            view.stampaTesto("Il carico di lavoro non ci permette di accettare un così alto numero di portate. Rimosso dalla lista: " + portata.getNome() + " x" + quantita);
+            //tolgo la portata inserita che fa eccedere il carico di lavoro totale e reinserisco
+            scelte.remove(portata);
+            if (quantita_precedente != 0 ) scelte.put(portata, quantita_precedente);
+
+        } else if (quantita == 0) view.stampaTesto("Portata non aggiunta all'ordine.");
+
+        view.premerePerContinuare();
+        view.ripulisciConsole();
+    }
     /**
      * <h2>Metodo che compie diversi controlli sulla data inserita</h2>
      * <b>Precondizione: </b>il ristorante deve essere istanziato
