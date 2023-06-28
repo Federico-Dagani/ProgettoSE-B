@@ -138,7 +138,7 @@ public class LetturaFileXML {
                                 menuTematicoCase(menu_tematico, xmlreader);
                                 break;
                         }
-                    //evento di fine lettura elemento
+                        //evento di fine lettura elemento
                     case XMLStreamConstants.END_ELEMENT:
                         //se siamo al tag di chiusura aggiungo tutte le cose lette al magazzino e al menu
                         switch (xmlreader.getLocalName()) {
@@ -252,10 +252,11 @@ public class LetturaFileXML {
     public ArrayList<LocalDate> creaDisponibilita(XMLStreamReader xmlreader) {
         //precondizione: xmlreader deve essere un file XML valido
         if(xmlreader == null) throw new IllegalArgumentException("xmlreader non valido");
-        ArrayList<LocalDate> disponibilita = new ArrayList<>();
+            ArrayList<LocalDate> disponibilita = new ArrayList<>();
         for (int i = 0; i < xmlreader.getAttributeCount(); i++) {
 
             switch (xmlreader.getAttributeLocalName(i)) {
+
                 //leggo il tag INIZIO e aggiungo la data di inizio disponibilità
                 case Costanti.INIZIO:
                     disponibilita.add(LocalDate.parse(xmlreader.getAttributeValue(i)));
