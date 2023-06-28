@@ -71,10 +71,12 @@ public class Magazziniere extends Persona {
         //precondizione: n_persone > 0 e ci siano bevande nel magazzino
         if(n_persone <= 0) throw new IllegalArgumentException("Il numero di persone deve essere maggiore di 0");
         if(magazzino.getBevande().isEmpty()) throw new IllegalArgumentException("Non ci sono bevande nel magazzino");
+
         HashMap<Alimento, Float> consumo_bevande = new HashMap<>();
         //doppio cast perchè la consegna richiede che sia arrotondato all' intero superiore ma lo storiamo come float
         magazzino.getBevande().forEach(bevanda -> consumo_bevande.put(bevanda, (float) (int) Math.ceil(n_persone * ((Bevanda) bevanda).getCons_procapite())));
         //postcondizione: il numero di bevande calcolate è uguale al numero di bevande nel magazzino
+
         assert consumo_bevande.size() == magazzino.getBevande().size();
         return consumo_bevande;
     }
@@ -91,6 +93,7 @@ public class Magazziniere extends Persona {
         //precondizione: n_persone > 0 e ci siano extras nel magazzino
         if(n_persone <= 0) throw new IllegalArgumentException("Il numero di persone deve essere maggiore di 0");
         if(magazzino.getExtras().isEmpty()) throw new IllegalArgumentException("Non ci sono extras nel magazzino");
+
         HashMap<Alimento, Float> consumo_extras = new HashMap<>();
         //anche in questo caso devo fare doppio cast perchè la consegna richiede che sia arrotondato all' intero superiore
         magazzino.getExtras().forEach(extra -> consumo_extras.put(extra,(float) (int) Math.ceil(n_persone * ((Extra) extra).getCons_procapite())));
