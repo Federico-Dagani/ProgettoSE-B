@@ -7,22 +7,18 @@ import ProgettoSE.Model.Alimentari.Alimento;
 import ProgettoSE.Model.Alimentari.Bevanda;
 import ProgettoSE.Model.Alimentari.Extra;
 import ProgettoSE.Model.Alimentari.Ingrediente;
-
 import ProgettoSE.Model.Attori.AddettoPrenotazione.AddettoPrenotazione;
 import ProgettoSE.Model.Attori.AddettoPrenotazione.Prenotazione;
 import ProgettoSE.Model.Attori.Cliente;
+import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Gestore.Ristorante;
 import ProgettoSE.Model.Attori.Magazziniere.Magazzino;
-import ProgettoSE.Model.Attori.Gestore.Gestore;
 import ProgettoSE.Model.Attori.Tempo;
-
-import ProgettoSE.Model.Produzione.Menu.Menu;
 import ProgettoSE.Model.Produzione.Menu.MenuTematico;
 import ProgettoSE.Model.Produzione.Piatto;
 import ProgettoSE.Model.Produzione.Prenotabile;
 import ProgettoSE.Utility.Costanti;
 import ProgettoSE.Utility.MyMenu;
-
 import ProgettoSE.View.View;
 
 import java.time.LocalDate;
@@ -90,9 +86,9 @@ public class Controller {
 
                     scegliFunzionalitaGestore(gestore.getRistorante());
                     view.ripulisciConsole();
-                    view.ripulisciConsole();
-
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.GESTORE.toUpperCase(Locale.ROOT));
+                    view.premerePerContinuare();
+                    view.ripulisciConsole();
                     break;
 
                 case 2:
@@ -110,12 +106,16 @@ public class Controller {
                         view.ripulisciConsole();
                     }
                     view.stampaTesto(Costanti.USCITA_MENU + Costanti.TEMPO.toUpperCase(Locale.ROOT));
+                    view.premerePerContinuare();
+                    view.ripulisciConsole();
                     break;
             }
-            view.premerePerContinuare();
-            view.ripulisciConsole();
+            //view.premerePerContinuare();
+            //view.ripulisciConsole();
             scelta_attore = menu_attori.scegliConUscita(view);
             view.ripulisciConsole();
+            //view.premerePerContinuare();
+            //view.ripulisciConsole();
         }
 
         view.stampaTesto("\n" + Costanti.USCITA_MENU + Costanti.ATTORI.toUpperCase(Locale.ROOT));
@@ -141,6 +141,7 @@ public class Controller {
             Handler handler = options.get(scelta).getAction();
             handler.esegui(view, ristorante);
             view.premerePerContinuare();
+            view.ripulisciConsole();
         }while (scelta != 0);
     }
 
