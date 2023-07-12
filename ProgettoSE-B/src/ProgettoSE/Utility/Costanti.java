@@ -51,6 +51,8 @@ public class Costanti {
     public static final String INS_MISURA = "Inserisci l'unità di misura: ";
     public static final String INS_LAVORO = "Inserisci il lavoro: ";
     //messaggi x menu
+    public static final String INSERIRE_NUMERO_CORRETTO = "Scelta invalida." ;
+
     public static final String FUNZIONALITA = "funzionalità ";
     public static final String USCITA_MENU = "... uscita dal menù ";
     public static final String END = "PROGRAMMA TERMINATO.";

@@ -155,7 +155,7 @@ public class Magazziniere extends Persona {
         if(qta_richiesta_piatto < 0) throw new IllegalArgumentException("La quantità di piatti deve essere maggiore o uguale a 0");
         //calcolo dei valori per facilitare la stesura del codice
         int n_porzioni_ricetta = piatto.getRicetta().getN_porzioni();   //ricetta x5
-        int n_ricette = (int) Math.ceil(qta_richiesta_piatto / n_porzioni_ricetta);  //   14/5   = 3 ricette
+        int n_ricette = (int) Math.ceil((float)qta_richiesta_piatto / n_porzioni_ricetta);  //   14/5   = 3 ricette
         //ciclo sugli ingredienti del piatto
         for (Alimento ingrediente : piatto.getRicetta().getIngredienti()) {
             //per trovare il numero di porzioni da fare mi interessa il numero di porzioni che genera la ricetta, in relazione al numero di porzioni che mi servono di quel piatto

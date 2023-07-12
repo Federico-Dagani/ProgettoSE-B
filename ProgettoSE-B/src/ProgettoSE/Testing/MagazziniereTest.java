@@ -85,6 +85,11 @@ public class MagazziniereTest {
         magazziniere_test.creaListaSpesa(prenotazione_test);
 
         magazziniere_test.getLista_spesa().forEach((alimento -> System.out.println(alimento.getNome() + " " + alimento.getQta())));
+        assert magazziniere_test.getLista_spesa().size() == 3 &&
+                magazziniere_test.getLista_spesa().get(0).getNome().equals("Pomodoro") &&
+                magazziniere_test.getLista_spesa().get(1).getNome().equals("Sale") &&
+                magazziniere_test.getLista_spesa().get(2).getNome().equals("Sprite");
+
     }
 
 

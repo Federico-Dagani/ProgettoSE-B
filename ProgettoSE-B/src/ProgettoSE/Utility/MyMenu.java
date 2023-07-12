@@ -39,7 +39,7 @@ public class MyMenu {
 
     public int scegliConUscita(View view) {
         stampaMenuConUscita();
-        return view.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.size());
+        return view.leggiIntero(RICHIESTA_INSERIMENTO, 0, voci.size()-1);
     }
 
     public void stampaMenuConUscita() {
